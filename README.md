@@ -1,5 +1,5 @@
 # Grocery Store
-This is a simple grocery app. It uses [Grocery Store API](github.com/kumar-shivang/Grocery-Store-API) in the backend.
+This is a simple grocery app. It uses [Grocery Store API](https://www.github.com/kumar-shivang/Grocery-Store-API) in the backend.
 It is created using [VueJS](https://vuejs.org/) and [Vuetify](https://vuetifyjs.com/).
 It also has PWA support.
 
