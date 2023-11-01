@@ -1,34 +1,30 @@
-<script setup>
-// import { RouterLink, RouterView } from 'vue-router'
+<script>
+import Navbar from '@/components/Navbar.vue'
+import { RouterView } from 'vue-router'
+export default {
+  name: 'App',
+  components: {
+    Navbar
+  }
+}
 </script>
 
 <template>
-<v-app>
-  <v-app-bar rounded elevation="2">
-    <v-app-bar-title>
-    <v-img class="logo" src="./src/assets/logo.svg" alt="logo" inline=true></v-img>
-      <div class="title">Grocery App</div>
-    </v-app-bar-title>
-    <v-spacer></v-spacer>
-    <v-btn text to="/">Home</v-btn>
-    <v-btn text to="/about">About</v-btn>
-  </v-app-bar>
-  <v-main>
-    <router-view></router-view>
-  </v-main>
-</v-app>
+  <header>
+    <Navbar />
+  </header>
+  <main class="d-flex flex-row justify-content-center align-items-center">
+    <router-view />
+  </main>
+  <footer class="d-flex flex-column"></footer>
 </template>
 
 <style scoped>
-.logo {
-  width: 30px;
-  height: 30px;
-  max-width: inherit;
-  max-height: inherit;
-  margin-right: 10px;
-
+main {
+  min-height: 90vh;
 }
-.title {
-  font-size: 20px;
+router-view {
+  flex: 1;
+  margin: auto;
 }
 </style>
