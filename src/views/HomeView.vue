@@ -1,17 +1,30 @@
-<script setup>
+<script>
+import { RouterLink, RouterView } from 'vue-router'
+import { useBaseStore } from '@/stores/baseStore'
+export default {
+  name: 'HomeView',
+  components: {
+    // LoginForm
+  },
+  data: () => ({
+    baseStore: useBaseStore()
+  })
+}
 </script>
 
 <template>
-    <v-card>
-      <v-card-title>
-        <v-icon icon="mdi-home" color="green" size="s"/> Home
-      </v-card-title>
-      <v-card-text>
-        <h1>Welcome to the Grocery App</h1>
-        <h3>Here you can find all the groceries you need</h3>
-        </v-card-text>
-      <v-card-subtitle>
-        <v-icon icon="mdi-account" color="green" size="s"/> User
-      </v-card-subtitle>
-    </v-card>
+  <div>
+    <h1>Welcome to the grocery store</h1>
+  </div>
 </template>
+
+<style scoped>
+div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
