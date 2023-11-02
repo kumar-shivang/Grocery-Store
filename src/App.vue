@@ -16,15 +16,29 @@ export default {
   <main class="d-flex flex-row justify-content-center align-items-center">
     <router-view />
   </main>
-  <footer class="d-flex flex-column"></footer>
+  <footer class="d-flex flex-row">
+    <router-link to="adminPage">Open as admin</router-link>
+  </footer>
 </template>
 
 <style scoped>
 main {
-  min-height: 90vh;
+  min-height: 85vh;
+}
+header {
+  height: 10vh;
 }
 router-view {
   flex: 1;
+  margin: auto;
+}
+footer {
+  height: 5vh;
+  background-color: whitesmoke;
+}
+a {
+  text-decoration: none;
+  color: black;
   margin: auto;
 }
 </style>
