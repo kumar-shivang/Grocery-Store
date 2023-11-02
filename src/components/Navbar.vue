@@ -101,7 +101,6 @@ export default {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 10px 0;
   width: 99vw;
-  min-height: 60px;
 }
 .navbar-brand {
   color: #000;
