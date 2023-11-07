@@ -21,11 +21,14 @@ export default {
     },
     searchTypeChange(type) {
       this.searchForm.type = type
+    },
+    logout() {
+      this.store.logout()
     }
   },
   computed: {
     isLoggedIn() {
-      return this.store.isLoggedIn
+      return this.store.$state.isLogged
     }
   }
 }
@@ -87,7 +90,7 @@ export default {
           </li>
           <li class="nav-item">
             <router-link to="login" v-if="!isLoggedIn" class="nav-link active"> Login </router-link>
-            <router-link to="logout" v-else class="nav-link active"> Logout </router-link>
+            <div v-else class="nav-link active" @click="logout">Logout</div>
           </li>
         </ul>
       </div>

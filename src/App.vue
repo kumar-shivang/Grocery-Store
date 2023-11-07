@@ -1,10 +1,17 @@
 <script>
 import Navbar from '@/components/Navbar.vue'
-import { RouterView } from 'vue-router'
+import { useBaseStore } from '@/stores/baseStore'
 export default {
   name: 'App',
+  setup() {
+    const store = useBaseStore()
+    return { store }
+  },
   components: {
     Navbar
+  },
+  beforeMount() {
+    this.store.checkLogin()
   }
 }
 </script>

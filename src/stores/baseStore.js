@@ -15,7 +15,11 @@ function getCookie() {
   return token
 }
 function setCookie(token) {
-  document.cookie = `access_token=${token}; path=/;`
+  document.cookie = `access_token=${token}; path=/; SameSite=None; Secure;`
+}
+
+function deleteCookie() {
+  document.cookie = `access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
 }
 
 export const useBaseStore = defineStore('base', {
@@ -44,6 +48,22 @@ export const useBaseStore = defineStore('base', {
   },
 
   actions: {
+    checkLogin() {
+      this.access_token = getCookie()
+      if (this.access_token !== '') {
+        this.isLogged = true
+      }
+    },
+    logout() {
+      this.access_token = ''
+      this.user = {
+        id: '',
+        username: '',
+        email: ''
+      }
+      this.isLogged = false
+      deleteCookie()
+    },
     async getUser(state, userType) {
       if (this.access_token === '') {
         return
@@ -69,19 +89,27 @@ export const useBaseStore = defineStore('base', {
     async fetchAccessToken(username, password, type) {
       this.access_token = getCookie()
       if (this.access_token === '') {
-        axios
-          .post('http://localhost:5000/api' + type + '/login', {
+        const response = await fetch('http://localhost:5000/api/login/' + type, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
             username: username,
             password: password
           })
-          .then((response) => {
-            this.access_token = response.data.access_token
-            setCookie(this.access_token)
-          })
-          .catch((error) => {
-            console.log(error)
-            this.loginError = error
-          })
+        })
+        const data = await response.json()
+        if (data.access_token) {
+          this.access_token = data.access_token
+          setCookie(data.access_token)
+          this.isLogged = true
+          this.loginError = ''
+        } else {
+          this.loginError = data.message
+        }
+      } else {
+        this.isLogged = true
       }
     }
   }
