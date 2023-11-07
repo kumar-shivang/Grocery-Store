@@ -23,15 +23,14 @@ export default {
         username: '',
         password: '',
         email: ''
-      }
+      },
+      message: '',
+      responseCode: 0,
+      url: 'http://localhost:5000/api/user/'
     }
   },
 
   methods: {
-    signup() {
-      console.log(this.form)
-      console.log(this.type)
-    },
     validateUsername(username) {
       if (!username) {
         return 'Username is required'
@@ -66,13 +65,45 @@ export default {
       } else {
         return true
       }
+    },
+    async register() {
+      console.log(JSON.stringify(this.form))
+      try {
+        const response = await fetch(this.url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Access-Control-Allow-Origin': '*',
+            cors: 'no-cors'
+          },
+          body: JSON.stringify({
+            username: this.form.username,
+            password: this.form.password,
+            email: this.form.email
+          })
+        })
+        this.responseCode = response.status
+        console.log(response)
+        let data = await response.json()
+        console.log(data.message)
+        console.log(typeof data.message)
+        if (response.status === 201) {
+          this.message = 'User created successfully'
+        } else {
+          for (let error in data.values()) {
+            this.message += error + '\n'
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
 </script>
 
 <template>
-  <Form class="form-control d-flex flex-column" @submit.prevent="signup">
+  <Form class="form-control d-flex flex-column" @submit="register">
     <h1 class="text-center">Sign Up</h1>
     <div class="form-group">
       <label for="username" class="form-label mb-1">Username</label>
@@ -91,6 +122,7 @@ export default {
       <Field
         name="password"
         label="Password"
+        type="password"
         :rules="[validatePassword]"
         v-model="form.password"
         class="form-control mb3"
@@ -110,6 +142,14 @@ export default {
     </div>
     <div class="d-flex flex-row">
       <button type="submit" class="btn btn-lg btn-primary w-75 mx-auto">Sign Up</button>
+    </div>
+    <div v-if="responseCode">
+      <div v-if="responseCode === 201" class="alert alert-success mx-auto mt-3" role="alert">
+        {{ message }}
+      </div>
+      <div v-else class="alert alert-danger mx-auto mt-3" role="alert">
+        {{ message }}
+      </div>
     </div>
     <div class="mx-auto">Already have an account? <router-link to="login">Login</router-link></div>
   </Form>

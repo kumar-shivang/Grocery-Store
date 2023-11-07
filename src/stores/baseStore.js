@@ -27,7 +27,8 @@ export const useBaseStore = defineStore('base', {
         username: '',
         email: ''
       },
-      isLogged: false
+      isLogged: false,
+      loginError: ''
     }
   },
   getters: {
@@ -64,6 +65,24 @@ export const useBaseStore = defineStore('base', {
     setAccessToken(state, token) {
       this.access_token = token
       setCookie(token)
+    },
+    async fetchAccessToken(username, password, type) {
+      this.access_token = getCookie()
+      if (this.access_token === '') {
+        axios
+          .post('http://localhost:5000/api' + type + '/login', {
+            username: username,
+            password: password
+          })
+          .then((response) => {
+            this.access_token = response.data.access_token
+            setCookie(this.access_token)
+          })
+          .catch((error) => {
+            console.log(error)
+            this.loginError = error
+          })
+      }
     }
   }
 })

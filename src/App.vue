@@ -17,7 +17,7 @@ export default {
     <router-view />
   </main>
   <footer class="d-flex flex-row">
-    <router-link to="adminPage">Open as admin</router-link>
+    <router-link to="admin">Open as admin</router-link>
   </footer>
 </template>
 

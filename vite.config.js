@@ -3,16 +3,19 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
-import basicSsl from '@vitejs/plugin-basic-ssl'
 
 export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
       devOptions: {
-        enabled: true,
+        enabled: true
       },
-      includeAssets: ['./src/assets/favicon.ico', './src/assets/pwa-192x192.png', './src/assets/pwa-512x512.png'],
+      includeAssets: [
+        './src/assets/favicon.ico',
+        './src/assets/pwa-192x192.png',
+        './src/assets/pwa-512x512.png'
+      ],
       manifest: {
         name: 'Grocery Store',
         short_name: 'GroceryStore',
@@ -43,30 +46,26 @@ export default defineConfig({
           }
         ]
       }
-    }),
-    basicSsl()
-
+    })
+    // basicSsl()
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  server:{
+  server: {
     port: 8080,
     strictPort: true,
-    host: true,
-    https: true
+    host: true
   },
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia']
+    include: ['vue', 'vue-router', 'pinia', 'axios', 'vee-validate']
   },
   build: {
     rollupOptions: {
-      input: 'index.html',
-
+      input: 'index.html'
     },
-    manifest: true,
-
-    }
+    manifest: true
+  }
 })

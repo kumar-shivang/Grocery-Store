@@ -31,6 +31,7 @@ export default {
   methods: {
     login() {
       console.log(this.form)
+      this.store.fetchAccessToken(this.form.username, this.form.password, this.type)
     },
     validateUsername(username) {
       if (!username) {
@@ -60,7 +61,7 @@ export default {
 <template>
   <Form class="form-control d-flex flex-column" @submit="login">
     <div class="mx-auto">
-      <h1>Login</h1>
+      <h1>{{ type[0].toUpperCase() + type.slice(1) }} Login</h1>
     </div>
     <div class="form-group">
       <label for="username" class="form-label mb-1">Username</label>

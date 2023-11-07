@@ -9,7 +9,12 @@ export default {
   },
   data: () => ({
     baseStore: useBaseStore()
-  })
+  }),
+  methods: {
+    login() {
+      this.baseStore.login()
+    }
+  }
 }
 </script>
 
