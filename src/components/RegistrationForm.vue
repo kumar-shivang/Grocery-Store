@@ -83,15 +83,18 @@ export default {
           })
         })
         this.responseCode = response.status
-        console.log(response)
-        let data = await response.json()
-        console.log(data.message)
-        console.log(typeof data.message)
         if (response.status === 201) {
           this.message = 'User created successfully'
         } else {
-          for (let error in data.values()) {
-            this.message += error + '\n'
+          let data = await response.json()
+          data = data.message
+          console.log(data)
+          let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
+          console.log(matches)
+          for (let i = 0; i < matches.length; i++) {
+            if (i % 2 !== 0) {
+              this.message += matches[i].toLowerCase() + ','
+            }
           }
         }
       } catch (error) {
@@ -143,11 +146,11 @@ export default {
     <div class="d-flex flex-row">
       <button type="submit" class="btn btn-lg btn-primary w-75 mx-auto">Sign Up</button>
     </div>
-    <div v-if="responseCode">
+    <div v-if="responseCode" class="d-flex flex-column">
       <div v-if="responseCode === 201" class="alert alert-success mx-auto mt-3" role="alert">
         {{ message }}
       </div>
-      <div v-else class="alert alert-danger mx-auto mt-3" role="alert">
+      <div v-else class="alert alert-danger mx-auto mt-3 mx-auto" role="alert">
         {{ message }}
       </div>
     </div>
