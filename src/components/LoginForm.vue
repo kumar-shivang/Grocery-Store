@@ -93,8 +93,14 @@ export default {
         <ErrorMessage name="password" class="text-danger" />
       </div>
     </div>
+    <div
+      class="alert alert-danger d-flex align-items-center justify-content-center w-75 mx-auto"
+      v-if="store.loginError"
+    >
+      {{ store.loginError }}
+    </div>
     <div class="d-flex flex-column align-items-center">
-      <button class="btn btn-lg btn-primary w-75 mb-2" @click="login">Login</button>
+      <button class="btn btn-lg btn-primary w-75 mb-2" id="login" @click="login">Login</button>
       <button
         class="btn btn-lg btn-light btn-outline-primary w-75 mb-2 btn"
         @click="$router.push('register')"
@@ -113,5 +119,8 @@ export default {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#login:hover {
+  background-color: black;
 }
 </style>
