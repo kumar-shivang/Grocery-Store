@@ -106,11 +106,17 @@ export const useBaseStore = defineStore('base', {
           this.isLogged = true
           this.loginError = ''
         } else {
-          this.loginError = data.message
+          this.showError(data.message)
         }
       } else {
         this.isLogged = true
       }
+    },
+    showError(error) {
+      this.loginError = error
+      setTimeout(() => {
+        this.loginError = ''
+      }, 3000)
     }
   }
 })
