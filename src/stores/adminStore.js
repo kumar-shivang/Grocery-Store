@@ -3,7 +3,11 @@ import { defineStore } from 'pinia'
 export const useAdminStore = defineStore({
   id: 'admin',
   state: () => ({
-    admin: null
+    admin: {
+      id: '',
+      username: '',
+      email: ''
+    }
   }),
   getters: {
     getAdmin() {
