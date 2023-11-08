@@ -23,8 +23,11 @@ export default {
   <main class="d-flex flex-row justify-content-center align-items-center">
     <router-view />
   </main>
-  <footer class="d-flex flex-row">
-    <router-link to="admin">Open as admin</router-link>
+  <footer class="d-flex flex-row align-items-center justify-content-center">
+    <span v-show="!store.isLogged"
+      >Open as <button class="btn btn-sm" @click="$router.push('admin')">admin</button
+      ><button class="btn btn-sm" @click="$router.push('manager')">manager</button></span
+    >
   </footer>
 </template>
 
@@ -47,5 +50,12 @@ a {
   text-decoration: none;
   color: black;
   margin: auto;
+}
+footer button:hover {
+  color: white;
+  background-color: black;
+}
+.btn {
+  border: black 1px solid;
 }
 </style>
