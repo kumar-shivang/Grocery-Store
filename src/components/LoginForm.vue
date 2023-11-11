@@ -55,7 +55,8 @@ export default {
         return true
       }
     }
-  }
+  },
+  emits: ['signup-clicked']
 }
 </script>
 <template>
@@ -103,9 +104,10 @@ export default {
       <button class="btn btn-lg btn-primary w-75 mb-2" id="login" @click="login">Login</button>
       <button
         class="btn btn-lg btn-light btn-outline-primary w-75 mb-2 btn"
-        @click="$router.push('register')"
+        v-if="type !== 'admin'"
+        @click="$emit('signup-clicked')"
       >
-        Sign Up
+        <i>New here?</i> Sign Up
       </button>
     </div>
   </Form>
