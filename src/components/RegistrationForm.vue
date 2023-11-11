@@ -25,8 +25,8 @@ export default {
         email: ''
       },
       message: '',
-      responseCode: 0,
-      url: 'http://localhost:5000/api/user/'
+      success: false,
+      got_response: false
     }
   },
 
@@ -66,10 +66,10 @@ export default {
         return true
       }
     },
-    async register() {
+    async userRegistration() {
       console.log(JSON.stringify(this.form))
       try {
-        const response = await fetch(this.url, {
+        const response = await fetch('http://127.0.0.1:5000/api/user/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -82,8 +82,9 @@ export default {
             email: this.form.email
           })
         })
-        this.responseCode = response.status
-        if (response.status === 201) {
+        this.got_response = true
+        this.success = response.ok
+        if (this.success) {
           this.message = 'User created successfully'
         } else {
           let data = await response.json()
@@ -100,14 +101,56 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async managerRegistration() {
+      console.log(JSON.stringify(this.form))
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/manager/create_manager_request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+          },
+          body: JSON.stringify({
+            username: this.form.username,
+            password: this.form.password,
+            email: this.form.email
+          })
+        })
+        this.got_response = true
+        this.success = response.ok
+        if (this.success) {
+          this.message = 'Manager request created successfully, please wait for admin approval'
+        } else {
+          let data = await response.json()
+          data = data.message
+          console.log(data)
+          let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
+          console.log(matches)
+          for (let i = 0; i < matches.length; i++) {
+            if (i % 2 !== 0) {
+              this.message += matches[i].toLowerCase() + ',' + '\n'
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async register() {
+      if (this.type === 'user') {
+        await this.userRegistration()
+      } else if (this.type === 'manager') {
+        await this.managerRegistration()
+      }
     }
-  }
+  },
+  emits: ['login-clicked']
 }
 </script>
 
 <template>
   <Form class="form-control d-flex flex-column" @submit="register">
-    <h1 class="text-center">Sign Up</h1>
+    <h1 class="text-center">{{ type[0].toUpperCase() + type.slice(1) }} Sign Up</h1>
     <div class="form-group">
       <label for="username" class="form-label mb-1">Username</label>
       <Field
@@ -146,15 +189,18 @@ export default {
     <div class="d-flex flex-row">
       <button type="submit" class="btn btn-lg btn-primary w-75 mx-auto">Sign Up</button>
     </div>
-    <div v-if="responseCode" class="d-flex flex-column">
-      <div v-if="responseCode === 201" class="alert alert-success mx-auto mt-3" role="alert">
+    <div v-if="got_response" class="d-flex flex-column">
+      <div v-if="success" class="alert alert-success mx-auto mt-3" role="alert">
         {{ message }}
       </div>
       <div v-else class="alert alert-danger mx-auto mt-3 mx-auto" role="alert">
         {{ message }}
       </div>
     </div>
-    <div class="mx-auto">Already have an account? <router-link to="login">Login</router-link></div>
+    <div class="mx-auto">
+      Already have an account?
+      <span class="text-primary" @click="$emit('login-clicked')">Login as {{ type }}</span>
+    </div>
   </Form>
 </template>
 
