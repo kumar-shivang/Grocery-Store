@@ -1,6 +1,4 @@
-import { computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
 
 function getCookie() {
   let token = document.cookie.split(';').some((item) => item.trim().startsWith('access_token='))
@@ -63,24 +61,6 @@ export const useBaseStore = defineStore('base', {
       }
       this.isLogged = false
       deleteCookie()
-    },
-    async getUser(state, userType) {
-      if (this.access_token === '') {
-        return
-      }
-      await axios
-        .get('http://localhost:5000/api/' + userType, {
-          headers: {
-            Authorization: `Bearer ${this.access_token}`
-          }
-        })
-        .then((response) => {
-          this.user = response.data
-          this.isLogged = true
-        })
-        .catch((error) => {
-          console.log(error)
-        })
     },
     setAccessToken(state, token) {
       this.access_token = token
