@@ -60,7 +60,7 @@ export default defineConfig({
     host: true
   },
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'axios', 'vee-validate']
+    include: ['vue', 'vue-router', 'pinia', 'vee-validate', 'sass']
   },
   build: {
     rollupOptions: {
