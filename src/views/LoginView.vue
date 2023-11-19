@@ -1,5 +1,4 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
 import { useBaseStore } from '@/stores/baseStore'
 import LoginForm from '@/components/LoginForm.vue'
 import RegistrationForm from '@/components/RegistrationForm.vue'
@@ -12,12 +11,7 @@ export default {
   data: () => ({
     baseStore: useBaseStore(),
     signUp: false
-  }),
-  methods: {
-    login() {
-      this.baseStore.login()
-    }
-  }
+  })
 }
 </script>
 

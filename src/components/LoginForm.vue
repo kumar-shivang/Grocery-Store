@@ -4,6 +4,11 @@ import { useBaseStore } from '@/stores/baseStore'
 import HomeView from '@/views/HomeView.vue'
 export default {
   name: 'LoginForm',
+  setup() {
+    const store = useBaseStore()
+    console.log('Setting up store in login form component')
+    return { store }
+  },
   components: {
     HomeView,
     Form,
@@ -21,7 +26,6 @@ export default {
   },
   data() {
     return {
-      store: useBaseStore(),
       form: {
         username: '',
         password: ''
@@ -29,9 +33,16 @@ export default {
     }
   },
   methods: {
-    login() {
-      console.log(this.form)
-      this.store.fetchAccessToken(this.form.username, this.form.password, this.type)
+    async login() {
+      let success = await this.store.fetchAccessToken(
+        this.form.username,
+        this.form.password,
+        this.type
+      )
+      if (success) {
+        console.log('Login successful')
+        this.$router.push('/')
+      }
     },
     validateUsername(username) {
       if (!username) {
