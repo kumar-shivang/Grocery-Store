@@ -142,6 +142,7 @@ export default {
       } else if (this.type === 'manager') {
         await this.managerRegistration()
       }
+      this.$router.push('/login')
     }
   },
   emits: ['login-clicked']
