@@ -1,5 +1,4 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
 import { useBaseStore } from '@/stores/baseStore'
 export default {
   name: 'HomeView',
