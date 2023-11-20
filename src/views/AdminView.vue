@@ -21,9 +21,18 @@ export default {
     baseStore: useBaseStore(),
     adminStore: useAdminStore()
   }),
-  methods: {
-    logout() {
-      this.baseStore.logout()
+  beforeMount() {
+    if (this.baseStore.checkLogin()) {
+      console.log('AdminView beforeMount')
+      console.log('Logged in as ' + this.baseStore.type)
+      if (this.baseStore.type === 'admin') {
+        // this.adminStore.fetchAdminData()
+        console.log('ok')
+      } else {
+        this.baseStore.logout()
+      }
+    } else {
+      console.log('AdminView beforeMount not logged in')
     }
   }
 }
