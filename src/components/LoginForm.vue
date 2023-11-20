@@ -41,7 +41,13 @@ export default {
       )
       if (success) {
         console.log('Login successful')
-        this.$router.push('/')
+        if (this.type === 'admin') {
+          this.$router.push('/admin')
+        } else if (this.type === 'manager') {
+          this.$router.push('/manager')
+        } else {
+          this.$router.push('/')
+        }
       }
     },
     validateUsername(username) {
