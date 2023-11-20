@@ -17,6 +17,15 @@ export default {
     } else {
       console.log('App beforeMount not logged in')
     }
+  },
+  methods: {
+    open_as_user() {
+      console.log('open as user')
+      this.store.logout()
+      console.warn(this.store.$state.type)
+      this.$router.push('/')
+      console.log('pushed')
+    }
   }
 }
 </script>
@@ -29,10 +38,26 @@ export default {
     <router-view />
   </main>
   <footer class="d-flex flex-row align-items-center justify-content-center">
-    <span v-show="!store.isLogged"
-      >Open as <button class="btn btn-sm" @click="$router.push('admin')">admin</button
-      ><button class="btn btn-sm" @click="$router.push('manager')">manager</button></span
-    >
+    <span>
+      Open as
+      <button
+        v-if="store.$state.type !== 'admin'"
+        class="btn btn-sm"
+        @click="$router.push('admin')"
+      >
+        admin
+      </button>
+      <button
+        v-if="store.$state.type !== 'manager'"
+        class="btn btn-sm"
+        @click="$router.push('manager')"
+      >
+        manager
+      </button>
+      <button v-if="store.$state.type !== 'user'" class="btn btn-sm" @click="open_as_user">
+        user
+      </button>
+    </span>
   </footer>
 </template>
 
