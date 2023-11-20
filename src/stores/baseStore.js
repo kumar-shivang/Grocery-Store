@@ -6,6 +6,7 @@ function getCookie() {
     .some((item) => item.trim().startsWith('access_token='))
   let typeExists = document.cookie.split(';').some((item) => item.trim().startsWith('login_type='))
   if (tokenExists && typeExists) {
+    console.log('both cookies exist')
     let access_token = document.cookie
       .split('; ')
       .find((row) => row.startsWith('access_token'))
@@ -14,12 +15,15 @@ function getCookie() {
       .split('; ')
       .find((row) => row.startsWith('login_type'))
       .split('=')[1]
+    console.log(access_token, type)
     return [access_token, type]
   } else {
+    console.log('cookie does not exist')
     return ['', 'user']
   }
 }
 function setCookie(token, type) {
+  console.log('setting cookie')
   let expires = new Date()
   expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000)
   document.cookie = `access_token=${token}; path=/; expires=${expires.toUTCString()}`
@@ -53,16 +57,14 @@ export const useBaseStore = defineStore('base', {
       return state.user
     },
     getIsLogged(state) {
-      if (state.access_token !== '') {
-        return true
-      }
-      return false
+      return state.access_token !== ''
     }
   },
 
   actions: {
     checkLogin() {
       ;[this.access_token, this.type] = getCookie()
+      console.log('checking login')
       console.log(this.access_token, this.type)
       if (this.access_token !== '') {
         this.isLogged = true
@@ -120,6 +122,7 @@ export const useBaseStore = defineStore('base', {
           this.type = type
           this.isLogged = true
           setCookie(data.access_token, type)
+          console.log('cookie set to: ' + document.cookie)
           return true
         } else {
           console.log('access token not received')
