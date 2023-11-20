@@ -53,7 +53,7 @@ export default {
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form class="d-flex mx-auto" role="search">
+        <form v-if="store.$state.type === 'user'" class="d-flex mx-auto" role="search">
           <input
             class="form-control"
             type="search"
