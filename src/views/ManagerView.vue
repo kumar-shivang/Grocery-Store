@@ -16,12 +16,26 @@ export default {
   },
   data: () => ({
     signUp: false
-  })
+  }),
+  beforeMount() {
+    if (this.baseStore.checkLogin()) {
+      console.log('ManagerView beforeMount')
+      console.log('Logged in as ' + this.baseStore.type)
+      if (this.baseStore.type === 'manager') {
+        // this.managerStore.fetchManagerData()
+        console.log('ok')
+      } else {
+        this.baseStore.logout()
+      }
+    } else {
+      console.log('ManagerView beforeMount not logged in')
+    }
+  }
 }
 </script>
 
 <template>
-  <div id="managerDashboard" v-if="baseStore.isLogged">
+  <div id="managerDashboard" v-if="baseStore.isLogged && baseStore.type === 'manager'">
     <h1>Manager Dashboard</h1>
   </div>
   <div class="form" v-else-if="!baseStore.isLogged & signUp">
