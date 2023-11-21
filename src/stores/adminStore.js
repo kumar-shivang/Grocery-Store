@@ -16,7 +16,9 @@ export const useAdminStore = defineStore({
     categoryRequests: [],
     categories: [],
     noCategoryRequests: false,
-    noManagerRequests: false
+    noManagerRequests: false,
+    message: '',
+    error: ''
   }),
   getters: {
     getAdmin() {
@@ -87,6 +89,80 @@ export const useAdminStore = defineStore({
           this.categories = data.categories // categories is a list of objects
         } else {
           console.log(response.json())
+        }
+      } else {
+        console.log('no token')
+      }
+    },
+    async approveManagerRequest(managerId) {
+      console.log('managerId', managerId)
+      if (this.access_token) {
+        const response = await fetch(
+          `http://localhost:5000/api/admin/approve_manager_request/${managerId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.access_token}`
+            },
+            method: 'PUT',
+            mode: 'cors'
+          }
+        )
+        if (response.ok) {
+          console.log('manager request approved')
+          await this.fetchManagerRequests()
+        } else {
+          console.log(response.json())
+        }
+      } else {
+        console.log('no token')
+      }
+    },
+    async rejectManagerRequest(managerId) {
+      if (this.access_token) {
+        const response = await fetch(
+          `http://localhost:5000/api/admin/reject_manager_request/${managerId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.access_token}`
+            },
+            method: 'PUT',
+            mode: 'cors'
+          }
+        )
+        if (response.ok) {
+          console.log('manager request rejected')
+          await this.fetchManagerRequests()
+        } else {
+          console.log(response.json())
+        }
+      } else {
+        console.log('no token')
+      }
+    },
+    async createCategory(name, description) {
+      console.log('name', name)
+      console.log('description', description)
+      if (this.access_token) {
+        const response = await fetch(`http://localhost:5000/api/admin/create_category`, {
+          headers: {
+            Authorization: `Bearer ${this.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify({
+            category_name: name,
+            category_description: description
+          })
+        })
+        let data = await response.json()
+        if (response.ok) {
+          console.log('category created')
+          this.message = data.message
+          await this.fetchCategories()
+        } else {
+          console.log(data)
+          this.error = data.message
         }
       } else {
         console.log('no token')
