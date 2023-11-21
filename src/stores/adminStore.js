@@ -42,7 +42,8 @@ export const useAdminStore = defineStore({
         if (response.ok) {
           const data = await response.json()
           this.managerRequests = data.manager_requests // manager_requests is a list of objects
-        } else {
+        } else if (response.status === 404) {
+          this.noManagerRequests = true
           console.log(response.json())
         }
       } else {
