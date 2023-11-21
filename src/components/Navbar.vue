@@ -99,8 +99,9 @@ export default {
 .navbar {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px 0;
-  width: 99vw;
+  padding: 0;
+  width: var(--app-width);
+  height: var(--header-height);
 }
 .navbar-brand {
   color: #000;
