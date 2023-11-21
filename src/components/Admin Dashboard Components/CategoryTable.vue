@@ -32,4 +32,17 @@ export default {
   </table>
 </template>
 
-<style scoped></style>
+<style scoped>
+table {
+  width: 100%;
+}
+th {
+  text-align: center;
+}
+td {
+  text-align: center;
+}
+button {
+  width: 100%;
+}
+</style>

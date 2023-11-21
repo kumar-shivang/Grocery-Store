@@ -4,6 +4,7 @@ import { useAdminStore } from '@/stores/adminStore'
 import CategoryTable from '@/components/Admin Dashboard Components/CategoryTable.vue'
 import CategoryRequestTable from '@/components/Admin Dashboard Components/CategoryRequestTable.vue'
 import ManagerRequestTable from '@/components/Admin Dashboard Components/ManagerRequestTable.vue'
+import CategoryForm from '@/components/Admin Dashboard Components/CategoryForm.vue'
 export default {
   name: 'AdminDashboard',
   setup() {
@@ -15,7 +16,8 @@ export default {
   components: {
     CategoryTable,
     CategoryRequestTable,
-    ManagerRequestTable
+    ManagerRequestTable,
+    CategoryForm
   }
 }
 </script>
@@ -23,9 +25,14 @@ export default {
 <template>
   <div id="dashboard" class="d-flex flex-row m-0">
     <div id="left">
-      <div>
-        <h1>Categories</h1>
-        <CategoryTable />
+      <div id="top-left">
+        <div class="w-100">
+          <h1>Categories</h1>
+          <CategoryTable />
+        </div>
+      </div>
+      <div id="bottom-left">
+        <CategoryForm />
       </div>
     </div>
     <div id="right">
@@ -64,32 +71,56 @@ export default {
   flex-direction: column;
   align-items: start;
   justify-content: start;
+  border: 1px solid black;
 }
 #right {
   width: 50%;
   height: 100%;
-  background-color: blue;
+  //background-color: blue;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: 1px solid black;
 }
 #top-right {
   width: 100%;
   height: 50%;
-  background-color: green;
+  //background-color: green;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: start;
+  border: 1px solid black;
 }
 #bottom-right {
   width: 100%;
   height: 50%;
-  background-color: yellow;
+  //background-color: yellow;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: start;
+  border: 1px solid black;
+}
+#top-left {
+  width: 100%;
+  height: 80%;
+  //background-color: purple;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  border: 1px solid black;
+}
+#bottom-left {
+  width: 100%;
+  height: 20%;
+  //background-color: orange;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  border: 1px solid black;
 }
 </style>

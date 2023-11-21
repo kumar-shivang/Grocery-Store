@@ -30,24 +30,33 @@ export default {
       <td>{{ mr.id }}</td>
       <td>{{ mr.username }}</td>
       <td>{{ mr.email }}</td>
-      <!--      <td>-->
-      <!--        <button-->
-      <!--          class="btn btn-success"-->
-      <!--          @click="adminStore.approveManagerRequest(mr.id)"-->
-      <!--        >-->
-      <!--          Approve-->
-      <!--        </button>-->
-      <!--      </td>-->
-      <!--      <td>-->
-      <!--        <button-->
-      <!--          class="btn btn-danger"-->
-      <!--          @click="adminStore.rejectManagerRequest(mr.id)"-->
-      <!--        >-->
-      <!--          Reject-->
-      <!--        </button>-->
-      <!--      </td>-->
+      <td>
+        <button
+          class="bi bi-check-circle-fill text-success"
+          @click="adminStore.approveManagerRequest(mr.id)"
+        />
+      </td>
+      <td>
+        <button
+          class="bi bi-x-circle-fill text-danger"
+          @click="adminStore.rejectManagerRequest(mr.id)"
+        />
+      </td>
     </tr>
   </table>
 </template>
 
-<style scoped></style>
+<style scoped>
+table {
+  width: 100%;
+}
+th {
+  text-align: center;
+}
+td {
+  text-align: center;
+}
+button {
+  width: 100%;
+}
+</style>

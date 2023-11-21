@@ -142,7 +142,9 @@ export default {
       } else if (this.type === 'manager') {
         await this.managerRegistration()
       }
-      this.$router.push('/login')
+      setTimeout(() => {
+        this.$router.push('/')
+      }, 5000)
     }
   },
   emits: ['login-clicked']
