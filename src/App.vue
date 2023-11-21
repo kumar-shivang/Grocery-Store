@@ -63,18 +63,19 @@ export default {
 
 <style scoped>
 main {
-  min-height: 85vh;
+  height: var(--main-height);
 }
 header {
-  height: 10vh;
+  height: var(--header-height);
 }
 router-view {
   flex: 1;
   margin: auto;
 }
 footer {
-  height: 5vh;
+  height: var(--footer-height);
   background-color: whitesmoke;
+  width: var(--app-width);
 }
 a {
   text-decoration: none;
