@@ -6,9 +6,6 @@ export default {
     const adminStore = useAdminStore()
     return { adminStore }
   },
-  data: () => ({
-    categories: []
-  }),
   beforeMount() {
     this.adminStore.fetchCategories()
   },
