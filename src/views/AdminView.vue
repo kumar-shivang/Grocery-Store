@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div id="adminDashboard" v-if="baseStore.isLogged">
+  <div id="adminDashboard" v-if="baseStore.isLogged & (baseStore.$state.type === 'admin')">
     <AdminDashboard />
   </div>
   <div id="adminLogin" v-else>
@@ -49,18 +49,10 @@ export default {
 
 <style scoped>
 #adminLogin {
-  width: 100%;
-  height: 100%;
+  width: var(--app-width);
+  height: var(--main-height);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#adminDashboard {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
