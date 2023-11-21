@@ -58,3 +58,13 @@
   font-weight: normal;
 }
 
+:root {
+  --app-width: 98vw;
+  --app-height: 100vh;
+  --header-height: 60px;
+  --footer-height: 60px;
+  --main-height: calc(var(--app-height) - var(--header-height) - var(--footer-height));
+
+
+}
+
