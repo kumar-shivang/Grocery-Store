@@ -1,10 +1,10 @@
 <script>
 import { useBaseStore } from '@/stores/baseStore'
 import { useAdminStore } from '@/stores/adminStore'
-import CategoryTable from '@/components/Admin Dashboard Components/CategoryTable.vue'
-import CategoryRequestTable from '@/components/Admin Dashboard Components/CategoryRequestTable.vue'
-import ManagerRequestTable from '@/components/Admin Dashboard Components/ManagerRequestTable.vue'
-import CategoryForm from '@/components/Admin Dashboard Components/CategoryForm.vue'
+import CategoryTable from '@/components/admin dashboard components/CategoryTable.vue'
+import CategoryRequestTable from '@/components/admin dashboard components/CategoryRequestTable.vue'
+import ManagerRequestTable from '@/components/admin dashboard components/ManagerRequestTable.vue'
+import CategoryForm from '@/components/admin dashboard components/CategoryForm.vue'
 export default {
   name: 'AdminDashboard',
   setup() {
