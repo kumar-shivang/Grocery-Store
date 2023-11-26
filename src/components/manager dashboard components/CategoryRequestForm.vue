@@ -43,8 +43,7 @@ export default {
       let data = await response.json()
       if (response.ok) {
         this.response_ok = true
-        this.response_message =
-          'Category request created successfully, please wait for admin approval'
+        this.response_message = data.message
       } else {
         this.response_ok = false
         this.response_message = data.message
@@ -108,10 +107,10 @@ export default {
         </div>
         <ErrorMessage name="category_description" class="text-danger" />
       </div>
-      <div class="text-success" v-if="response_ok && response_message">
+      <div class="text-success response" v-if="response_ok && response_message">
         {{ response_message }}
       </div>
-      <div class="text-danger" v-else-if="!response_ok && response_message">
+      <div class="text-danger response" v-else-if="!response_ok && response_message">
         {{ response_message }}
       </div>
       <button class="btn btn-primary mx-auto" type="submit">Request Category</button>
@@ -139,5 +138,8 @@ label {
 }
 #title {
   margin-bottom: 1rem;
+}
+.response {
+  margin-right: 25%;
 }
 </style>
