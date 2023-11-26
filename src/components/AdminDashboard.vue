@@ -23,36 +23,41 @@ export default {
 </script>
 
 <template>
-  <div id="dashboard" class="d-flex flex-row m-0">
-    <div id="left">
-      <div id="top-left">
-        <div class="w-100">
-          <h1>Categories</h1>
-          <CategoryTable />
+  <div id="dashboard">
+    <div id="title" class="w-100 d-flex flex-row align-items-center">
+      <h2 class="mx-auto">Admin Dashboard</h2>
+    </div>
+    <div id="container" class="d-flex flex-row m-0 w-100">
+      <div id="left">
+        <div id="top-left">
+          <div class="w-100">
+            <h1>Categories</h1>
+            <CategoryTable />
+          </div>
+        </div>
+        <div id="bottom-left">
+          <CategoryForm />
         </div>
       </div>
-      <div id="bottom-left">
-        <CategoryForm />
-      </div>
-    </div>
-    <div id="right">
-      <div id="top-right">
-        <h2>Category Requests</h2>
-        <template v-if="adminStore.noCategoryRequests">
-          <h3>No category requests</h3>
-        </template>
-        <template v-else>
-          <CategoryRequestTable />
-        </template>
-      </div>
-      <div id="bottom-right">
-        <h2>Manager Requests</h2>
-        <template v-if="adminStore.noManagerRequests">
-          <h3>No manager requests</h3>
-        </template>
-        <template v-else>
-          <ManagerRequestTable />
-        </template>
+      <div id="right">
+        <div id="top-right">
+          <h2>Category Requests</h2>
+          <template v-if="adminStore.noCategoryRequests">
+            <h3>No category requests</h3>
+          </template>
+          <template v-else>
+            <CategoryRequestTable />
+          </template>
+        </div>
+        <div id="bottom-right">
+          <h2>Manager Requests</h2>
+          <template v-if="adminStore.noManagerRequests">
+            <h3>No manager requests</h3>
+          </template>
+          <template v-else>
+            <ManagerRequestTable />
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -63,64 +68,69 @@ export default {
   width: var(--app-width);
   height: var(--main-height);
 }
+#title {
+  height: 10%;
+  border: thin solid dimgray;
+}
+#container {
+  height: 90%;
+}
 #left {
   width: 50%;
   height: 100%;
-  //background-color: red;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: start;
-  justify-content: start;
-  border: 1px solid black;
+  border: thin solid dimgray;
 }
 #right {
   width: 50%;
   height: 100%;
-  //background-color: blue;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid black;
+  justify-content: space-between;
+  align-items: start;
+  border: thin solid dimgray;
+}
+#top-left {
+  width: 100%;
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  border: thin solid dimgray;
+  padding: 1rem;
+}
+#bottom-left {
+  width: 100%;
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  border: thin solid dimgray;
+  padding: 1rem;
 }
 #top-right {
   width: 100%;
   height: 50%;
-  //background-color: green;
   display: flex;
   flex-direction: column;
-  align-items: start;
   justify-content: start;
-  border: 1px solid black;
+  align-items: start;
+  border: thin solid dimgray;
+  padding: 1rem;
 }
 #bottom-right {
   width: 100%;
   height: 50%;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
-  align-items: start;
   justify-content: start;
-  border: 1px solid black;
-}
-#top-left {
-  width: 100%;
-  height: 80%;
-  //background-color: purple;
-  display: flex;
-  flex-direction: column;
   align-items: start;
-  justify-content: start;
-  border: 1px solid black;
-}
-#bottom-left {
-  width: 100%;
-  height: 20%;
-  //background-color: orange;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  border: 1px solid black;
+  border: thin solid dimgray;
+  padding: 1rem;
 }
 </style>
