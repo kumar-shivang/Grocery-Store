@@ -3,6 +3,7 @@ import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
 import LoginForm from '@/components/LoginForm.vue'
 import RegistrationForm from '@/components/RegistrationForm.vue'
+import managerDashboard from '@/components/ManagerDashboard.vue'
 export default {
   name: 'ManagerView',
   setup() {
@@ -12,7 +13,8 @@ export default {
   },
   components: {
     LoginForm,
-    RegistrationForm
+    RegistrationForm,
+    managerDashboard
   },
   data: () => ({
     signUp: false
@@ -35,8 +37,8 @@ export default {
 </script>
 
 <template>
-  <div id="managerDashboard" v-if="baseStore.isLogged && baseStore.type === 'manager'">
-    <h1>Manager Dashboard</h1>
+  <div v-if="baseStore.isLogged && baseStore.type === 'manager'">
+    <managerDashboard />
   </div>
   <div class="form" v-else-if="!baseStore.isLogged & signUp">
     <RegistrationForm type="manager" @login-clicked="signUp = false" />
