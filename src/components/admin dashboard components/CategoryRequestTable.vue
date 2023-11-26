@@ -31,23 +31,34 @@ export default {
       <td>{{ categoryRequest.category_name }}</td>
       <td>{{ categoryRequest.category_description }}</td>
       <td>
-        <button
-          class="btn btn-success"
-          @click="adminStore.approveCategoryRequest(categoryRequest.id)"
-        >
+        <span id="approve" @click="adminStore.approveCategoryRequest(categoryRequest.id)">
           Approve
-        </button>
+        </span>
       </td>
       <td>
-        <button
-          class="btn btn-danger"
-          @click="adminStore.rejectCategoryRequest(categoryRequest.id)"
-        >
-          Reject
-        </button>
+        <div id="reject" @click="adminStore.rejectCategoryRequest(categoryRequest.id)">Reject</div>
       </td>
     </tr>
   </table>
 </template>
 
-<style scoped></style>
+<style scoped>
+#approve {
+  cursor: pointer;
+  color: limegreen;
+}
+#approve:hover {
+  text-decoration: underline;
+  background-color: limegreen;
+  color: white;
+}
+#reject {
+  cursor: pointer;
+  color: red;
+}
+#reject:hover {
+  text-decoration: underline;
+  background-color: red;
+  color: white;
+}
+</style>
