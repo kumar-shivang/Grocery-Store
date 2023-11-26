@@ -23,7 +23,12 @@ export default {
   },
   methods: {
     async requestCategory() {
-      const response = await fetch('http://localhost:8000/api/manager/request_category', {
+      console.log('Requesting category')
+      console.log({
+        category_name: this.category_name,
+        category_description: this.category_description
+      })
+      const response = await fetch('http://localhost:5000/api/manager/request_category', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +36,8 @@ export default {
         },
         body: JSON.stringify({
           category_name: this.category_name,
-          category_description: this.category_description
+          category_description: this.category_description,
+          request_type: 'add'
         })
       })
       let data = await response.json()
@@ -60,8 +66,8 @@ export default {
         return 'Category description is required'
       } else if (category_description.length < 10) {
         return 'Category description must be at least 10 characters long'
-      } else if (category_description.length > 20) {
-        return 'Category description must be at most 20 characters long'
+      } else if (category_description.length > 140) {
+        return 'Category description must be at most 140 characters long'
       } else {
         return true
       }
@@ -102,13 +108,13 @@ export default {
         </div>
         <ErrorMessage name="category_description" class="text-danger" />
       </div>
-      <div class="alert alert-success" v-if="response_ok && response_message">
+      <div class="text-success" v-if="response_ok && response_message">
         {{ response_message }}
       </div>
-      <div class="alert alert-danger" v-else-if="!response_ok && response_message">
+      <div class="text-danger" v-else-if="!response_ok && response_message">
         {{ response_message }}
       </div>
-      <button class="btn btn-primary mx-auto" type="submit">Create Category</button>
+      <button class="btn btn-primary mx-auto" type="submit">Request Category</button>
     </Form>
   </template>
 </template>
@@ -123,7 +129,7 @@ export default {
   align-items: end;
 }
 .form-group {
-  margin-right: 33%;
+  margin-right: 25%;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
