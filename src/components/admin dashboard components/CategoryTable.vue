@@ -18,7 +18,7 @@ export default {
 </script>
 
 <template>
-  <table class="table table-bordered">
+  <table class="table table-bordered table-responsive">
     <tr>
       <th><strong>ID</strong></th>
       <th><strong>Name</strong></th>
