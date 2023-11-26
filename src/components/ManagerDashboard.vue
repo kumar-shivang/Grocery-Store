@@ -1,6 +1,7 @@
 <script>
 import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
+import categoryRequestForm from '@/components/manager dashboard components/CategoryRequestForm.vue'
 export default {
   name: 'ManagerDashboard',
   setup() {
@@ -17,6 +18,9 @@ export default {
       noCategories: false,
       noProducts: false
     }
+  },
+  components: {
+    categoryRequestForm
   },
   mounted() {
     this.managerStore
@@ -66,7 +70,7 @@ export default {
           </div>
         </div>
         <div id="bottom-left">
-          <h1>Bottom Left</h1>
+          <categoryRequestForm />
         </div>
       </div>
       <div id="right">

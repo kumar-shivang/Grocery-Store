@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import { useBaseStore } from '@/stores/baseStore'
+
+const store = useBaseStore()
 
 export const useManagerStore = defineStore({
   id: 'manager',
@@ -9,7 +12,8 @@ export const useManagerStore = defineStore({
       email: ''
     },
     products: [],
-    categories: []
+    categories: [],
+    access_token: store.access_token
   }),
   getters: {
     getManager() {
