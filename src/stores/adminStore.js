@@ -167,6 +167,50 @@ export const useAdminStore = defineStore({
       } else {
         console.log('no token')
       }
+    },
+    async approveCategoryRequest(categoryId) {
+      if (this.access_token) {
+        const response = await fetch(
+          `http://localhost:5000/api/admin/approve_category/${categoryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.access_token}`
+            },
+            method: 'PUT',
+            mode: 'cors'
+          }
+        )
+        if (response.ok) {
+          console.log('category request approved')
+          await this.fetchCategoryRequests()
+        } else {
+          console.log(response.json())
+        }
+      } else {
+        console.log('no token')
+      }
+    },
+    async rejectCategoryRequest(categoryId) {
+      if (this.access_token) {
+        const response = await fetch(
+          `http://localhost:5000/api/admin/reject_category/${categoryId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.access_token}`
+            },
+            method: 'PUT',
+            mode: 'cors'
+          }
+        )
+        if (response.ok) {
+          console.log('category request rejected')
+          await this.fetchCategoryRequests()
+        } else {
+          console.log(response.json())
+        }
+      } else {
+        console.log('no token')
+      }
     }
   }
 })
