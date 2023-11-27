@@ -139,35 +139,6 @@ export const useAdminStore = defineStore({
         console.log('no token')
       }
     },
-    async createCategory(name, description) {
-      console.log('name', name)
-      console.log('description', description)
-      if (this.access_token) {
-        const response = await fetch(`http://localhost:5000/api/admin/create_category`, {
-          headers: {
-            Authorization: `Bearer ${this.access_token}`,
-            'Content-Type': 'application/json'
-          },
-          method: 'POST',
-          mode: 'cors',
-          body: JSON.stringify({
-            category_name: name,
-            category_description: description
-          })
-        })
-        let data = await response.json()
-        if (response.ok) {
-          console.log('category created')
-          this.message = data.message
-          await this.fetchCategories()
-        } else {
-          console.log(data)
-          this.error = data.message
-        }
-      } else {
-        console.log('no token')
-      }
-    },
     async approveCategoryRequest(categoryId) {
       if (this.access_token) {
         const response = await fetch(

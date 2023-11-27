@@ -10,7 +10,9 @@ export default {
   data() {
     return {
       category_name: '',
-      category_description: ''
+      category_description: '',
+      ok: false,
+      message: ''
     }
   },
   components: {
@@ -19,8 +21,36 @@ export default {
     ErrorMessage
   },
   methods: {
-    createCategory() {
-      this.adminStore.createCategory(this.category_name, this.category_description)
+    async createCategory() {
+      const response = await fetch(`http://localhost:5000/api/admin/create_category`, {
+        headers: {
+          Authorization: `Bearer ${this.adminStore.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify({
+          category_name: this.category_name,
+          category_description: this.category_description
+        })
+      })
+      let data = await response.json()
+      if (response.ok) {
+        this.cleanJSON(data.message)
+        this.ok = true
+        this.category_name = ''
+        this.category_description = ''
+        await this.adminStore.fetchCategories()
+      } else {
+        this.cleanJSON(data.message)
+        this.ok = false
+      }
+    },
+    cleanJSON(string) {
+      // write a fundtion that sets this.message to a string removing everything expect what is between '' in the string
+      let start = string.indexOf('[')
+      let end = string.indexOf(']')
+      this.message = string.slice(start + 1, end)
     }
   }
 }
@@ -49,6 +79,12 @@ export default {
         class="form-control-sm"
         type="text"
       />
+    </div>
+    <div v-if="ok && message" class="text-success">
+      {{ message }}
+    </div>
+    <div v-else-if="!ok && message" class="text-danger">
+      {{ message }}
     </div>
     <button class="btn btn-primary mx-auto" type="submit">Create Category</button>
   </Form>
