@@ -1,6 +1,6 @@
 <script>
 import { useManagerStore } from '@/stores/managerStore'
-import { Form, ErrorMessage, Field } from 'vee-validate'
+import { ErrorMessage, Field, Form } from 'vee-validate'
 
 export default {
   name: 'AddProductView',
@@ -33,7 +33,7 @@ export default {
         alert: ''
       },
       image: {
-        id: 0,
+        id: 1,
         url: ''
       }
     }
@@ -53,21 +53,24 @@ export default {
         description: this.product_description,
         category_id: this.product_category,
         image_id: this.image.id,
-        expiry_date: this.expiry_date
-        current_stock:this.product_stock
+        expiry_date: this.expiry_date,
+        current_stock: this.product_stock
       })
-      const response = await fetch('http://localhost:5000/api/product/create_product', {
+      const response = await fetch('http://localhost:5000/api/manager/create_product', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + this.managerStore.access_token
         },
         body: JSON.stringify({
-          product_name: this.product_name,
-          product_description: this.product_description,
-          product_price: this.product_price,
-          product_quantity: this.product_quantity,
-          product_category: this.product_category
+          name: this.product_name,
+          rate: this.product_rate,
+          unit: this.product_unit,
+          description: this.product_description,
+          category_id: this.product_category,
+          image_id: this.image.id,
+          expiry_date: this.expiry_date,
+          current_stock: this.product_stock
         })
       })
       let data = await response.json()
@@ -144,13 +147,12 @@ export default {
       }
     },
     async deleteImage() {
-      const response = await fetch('http://localhost:5000/api/image/delete/' + this.image.id, {
+      return await fetch('http://localhost:5000/api/image/delete/' + this.image.id, {
         method: 'DELETE',
         headers: {
           Authorization: 'Bearer ' + this.managerStore.access_token
         }
       })
-      return response
     },
     async imageReset() {
       if (this.imageUpload.done) {
@@ -161,7 +163,7 @@ export default {
           this.imageUpload.previewImage = null
           this.imageUpload.fileToUpload = null
           this.image = {
-            id: 0,
+            id: 1,
             url: ''
           }
         } else {
@@ -176,7 +178,7 @@ export default {
     },
     async cancel() {
       if (this.imageUpload.done) {
-        let response = await this.deleteImage()
+        await this.deleteImage()
       }
       this.$router.push('/manager')
     }
@@ -229,7 +231,7 @@ export default {
       <label for="useDefault">Use default image</label>
     </div>
     <!--    Product Creation Form-->
-    <Form @submit.prevent="createProduct">
+    <Form @submit="createProduct">
       <div class="form-group">
         <label for="product_name">Product Name</label>
         <Field
