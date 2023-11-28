@@ -1,0 +1,349 @@
+<script>
+import { useManagerStore } from '@/stores/managerStore'
+import { Form, ErrorMessage, Field } from 'vee-validate'
+
+export default {
+  name: 'AddProductView',
+  setup() {
+    const managerStore = useManagerStore()
+    return { managerStore }
+  },
+  components: {
+    Form,
+    Field,
+    ErrorMessage
+  },
+  data() {
+    return {
+      product_name: '',
+      product_description: '',
+      product_price: '',
+      product_quantity: '',
+      product_category: '',
+      response_ok: false,
+      response_message: '',
+      useDefaultImage: false,
+      imageUpload: {
+        previewImage: null,
+        fileToUpload: null,
+        done: false,
+        alert: ''
+      },
+      image: {
+        id: 0,
+        url: ''
+      }
+    }
+  },
+  computed: {
+    categories() {
+      return this.managerStore.categories
+    }
+  },
+  methods: {
+    async createProduct() {
+      console.log('Creating product')
+      console.log({
+        product_name: this.product_name,
+        product_description: this.product_description,
+        product_price: this.product_price,
+        product_quantity: this.product_quantity,
+        product_category: this.product_category
+      })
+      const response = await fetch('http://localhost:5000/api/manager/create_product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.managerStore.access_token
+        },
+        body: JSON.stringify({
+          product_name: this.product_name,
+          product_description: this.product_description,
+          product_price: this.product_price,
+          product_quantity: this.product_quantity,
+          product_category: this.product_category
+        })
+      })
+      let data = await response.json()
+      console.log(data)
+      if (response.ok) {
+        this.response_ok = true
+        this.response_message = data.message
+      } else {
+        this.response_ok = false
+        this.response_message = data.message
+      }
+    },
+    validateProductName(product_name) {
+      if (!product_name) {
+        return 'Product name is required'
+      } else if (product_name.length < 4) {
+        return 'Product name must be at least 4 characters long'
+      } else if (product_name.length > 20) {
+        return 'Product name must be at most 20 characters long'
+      } else {
+        return true
+      }
+    },
+    validateProductDescription(product_description) {
+      if (!product_description) {
+        return 'Product description is required'
+      } else if (product_description.length < 4) {
+        return 'Product description must be at least 4 characters long'
+      } else if (product_description.length > 20) {
+        return 'Product description must be at most 20 characters long'
+      } else {
+        return true
+      }
+    },
+    handleFileChange(e) {
+      console.log('Handling file change')
+      this.imageUpload.fileToUpload = e.target.files[0]
+      if (this.imageUpload.fileToUpload.size <= 2097152) {
+        console.log('Image size is less than 2MB')
+        console.log(this.imageUpload.fileToUpload.size / 1048576 + 'MB')
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this.imageUpload.previewImage = e.target.result
+        }
+        reader.readAsDataURL(this.imageUpload.fileToUpload)
+      } else {
+        this.imageUpload.alert = 'Image size must be less than 2MB'
+        this.imageUpload.fileToUpload = null
+      }
+    },
+    async uploadImage(e) {
+      e.preventDefault()
+      const formData = new FormData()
+      formData.append('image', this.imageUpload.fileToUpload)
+      const response = await fetch('http://localhost:5000/api/image/upload', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + this.managerStore.access_token
+        },
+        body: formData
+      })
+      let data = await response.json()
+      console.log(data)
+      if (response.ok) {
+        this.imageUpload.done = true
+        this.imageUpload.previewImage = null
+        this.imageUpload.fileToUpload = null
+        this.imageUpload.alert = data.message
+        this.image = data.image
+      } else {
+        this.imageUpload.previewImage = null
+        this.imageUpload.fileToUpload = null
+        this.imageUpload.alert = data.message
+      }
+    },
+    async deleteImage() {
+      const response = await fetch('http://localhost:5000/api/image/delete/' + this.image.id, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + this.managerStore.access_token
+        }
+      })
+      return response
+    },
+    async imageReset() {
+      if (this.imageUpload.done) {
+        let response = await this.deleteImage()
+        let data = response.json()
+        if (response.ok) {
+          this.imageUpload.done = false
+          this.imageUpload.previewImage = null
+          this.imageUpload.fileToUpload = null
+          this.image = {
+            id: 0,
+            url: ''
+          }
+        } else {
+          this.imageUpload.alert = data.message
+        }
+      } else {
+        this.imageUpload.previewImage = null
+        this.imageUpload.fileToUpload = null
+        this.imageUpload.alert = ''
+      }
+      this.useDefaultImage = false
+    },
+    async cancel() {
+      if (this.imageUpload.done) {
+        let response = await this.deleteImage()
+      }
+      this.$router.push('/manager')
+    }
+  }
+}
+</script>
+
+<template>
+  <div class="form">
+    <h3>Create Product</h3>
+    <!--    form for uploading image -->
+    <form id="uploadImage" class="form-group d-flex flex-row" v-if="!useDefaultImage">
+      <label for="product_image">Product Image</label>
+      <input
+        id="product_image"
+        name="product_image"
+        type="file"
+        class="form-control"
+        @change="handleFileChange"
+        accept="image/*"
+        :disabled="imageUpload.done"
+      />
+      <button
+        id="uploadButton"
+        class="btn btn-primary"
+        @click="uploadImage"
+        :disabled="imageUpload.done"
+      >
+        Upload Image
+      </button>
+      <!-- Reset Image--->
+      <i class="bi bi-arrow-clockwise" @click="imageReset" id="resetImage"></i>
+    </form>
+    <!--- Image Upload Alert --->
+    <div v-show="imageUpload.alert" :class="imageUpload.done ? 'text-success' : 'text-danger'">
+      {{ imageUpload.alert }}
+    </div>
+    <!--    Image preview -->
+    <div v-if="imageUpload.previewImage && !useDefaultImage">
+      <h4>Preview Image</h4>
+      <img :src="imageUpload.previewImage" alt="preview Image" />
+    </div>
+    <!-- Use Default Image --->
+    <div v-if="!imageUpload.done">
+      <input type="checkbox" v-model="useDefaultImage" id="useDefault" class="me-2" />
+      <label for="useDefault">Use default image</label>
+    </div>
+    <!--    Product Creation Form-->
+    <Form @submit.prevent="createProduct">
+      <div class="form-group">
+        <label for="product_name">Product Name</label>
+        <Field
+          id="product_name"
+          name="product_name"
+          type="text"
+          class="form-control"
+          v-model="product_name"
+          :rules="validateProductName"
+        />
+        <ErrorMessage name="product_name" class="text-danger" />
+      </div>
+      <div class="form-group">
+        <label for="product_description">Product Description</label>
+        <Field
+          id="product_description"
+          name="product_description"
+          type="text"
+          class="form-control"
+          v-model="product_description"
+          :rules="validateProductDescription"
+        />
+        <ErrorMessage name="product_description" class="text-danger" />
+      </div>
+      <div class="d-flex flex-row numbers">
+        <div class="form-group number-group">
+          <label for="product_price">Product Price</label>
+          <Field
+            id="product_price"
+            name="product_price"
+            type="number"
+            class="form-control"
+            v-model="product_price"
+            placeholder="0.5"
+            min="0.5"
+            step="0.5"
+          />
+        </div>
+        <div class="form-group number-group">
+          <label for="product_quantity">Product Quantity</label>
+          <Field
+            id="product_quantity"
+            name="product_quantity"
+            type="number"
+            class="form-control"
+            v-model="product_quantity"
+            placeholder="1"
+            min="1"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="product_category">Product Category</label>
+        <Field
+          id="product_category"
+          name="product_category"
+          type="text"
+          class="form-control"
+          v-model="product_category"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Create Product</button>
+      <button type="reset" class="btn btn-outline-dark" @click="imageReset">
+        Reset<i class="bi bi-arrow-clockwise" />
+      </button>
+      <button class="btn btn-danger" @click="cancel">Cancel<i class="bi bi-x" /></button>
+    </Form>
+    <div v-if="response_ok" class="alert alert-success" role="alert">
+      {{ response_message }}
+    </div>
+    <div v-else-if="!response_ok && response_message" class="alert alert-danger" role="alert">
+      {{ response_message }}
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.form {
+  width: 55%;
+  margin: 0 auto;
+  border: thin solid dimgray;
+  padding: 2rem;
+}
+.numbers {
+  justify-content: space-between;
+  width: 100%;
+}
+.number-group {
+  width: 48%;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+#uploadImage {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#product_image {
+  height: 2.5rem;
+  width: 80%;
+  margin-right: 1rem;
+}
+#uploadButton {
+  height: 2.5rem;
+  width: 20%;
+}
+img {
+  height: 10rem;
+  width: 10rem;
+}
+#resetImage {
+  font-size: 2rem;
+  cursor: pointer;
+}
+#resetImage:hover {
+  rotate: 90deg;
+}
+button:hover {
+  cursor: pointer;
+  zoom: 105%;
+}
+button {
+  margin-right: 1rem;
+}
+</style>
