@@ -74,7 +74,6 @@ export default {
         </div>
       </div>
       <div id="right">
-        <h1>Right</h1>
         <div v-if="noProducts">
           <h3>No products</h3>
         </div>
