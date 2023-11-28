@@ -17,9 +17,12 @@ export default {
     return {
       product_name: '',
       product_description: '',
-      product_price: '',
-      product_quantity: '',
+      product_rate: '',
+      product_stock: '',
       product_category: '',
+      product_unit: '',
+      expiry_date: new Date(),
+
       response_ok: false,
       response_message: '',
       useDefaultImage: false,
@@ -44,13 +47,16 @@ export default {
     async createProduct() {
       console.log('Creating product')
       console.log({
-        product_name: this.product_name,
-        product_description: this.product_description,
-        product_price: this.product_price,
-        product_quantity: this.product_quantity,
-        product_category: this.product_category
+        name: this.product_name,
+        rate: this.product_rate,
+        unit: this.product_unit,
+        description: this.product_description,
+        category_id: this.product_category,
+        image_id: this.image.id,
+        expiry_date: this.expiry_date
+        current_stock:this.product_stock
       })
-      const response = await fetch('http://localhost:5000/api/manager/create_product', {
+      const response = await fetch('http://localhost:5000/api/product/create_product', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,10 +94,10 @@ export default {
     validateProductDescription(product_description) {
       if (!product_description) {
         return 'Product description is required'
-      } else if (product_description.length < 4) {
-        return 'Product description must be at least 4 characters long'
-      } else if (product_description.length > 20) {
-        return 'Product description must be at most 20 characters long'
+      } else if (product_description.length < 20) {
+        return 'Product description must be at least 20 characters long'
+      } else if (product_description.length > 140) {
+        return 'Product description must be at most 140 characters long'
       } else {
         return true
       }
@@ -174,6 +180,10 @@ export default {
       }
       this.$router.push('/manager')
     }
+  },
+  beforeMount() {
+    this.managerStore.fetchCategories()
+    console.log(this.managerStore.categories)
   }
 }
 </script>
@@ -244,41 +254,70 @@ export default {
         />
         <ErrorMessage name="product_description" class="text-danger" />
       </div>
-      <div class="d-flex flex-row numbers">
-        <div class="form-group number-group">
-          <label for="product_price">Product Price</label>
+      <div class="d-flex flex-row rate">
+        <div class="form-group rate-group">
+          <label for="product_rate">Product Price</label>
           <Field
-            id="product_price"
-            name="product_price"
+            id="product_rate"
+            name="product_rate"
             type="number"
             class="form-control"
-            v-model="product_price"
+            v-model="product_rate"
             placeholder="0.5"
             min="0.5"
             step="0.5"
           />
         </div>
-        <div class="form-group number-group">
-          <label for="product_quantity">Product Quantity</label>
-          <Field
-            id="product_quantity"
-            name="product_quantity"
-            type="number"
-            class="form-control"
-            v-model="product_quantity"
-            placeholder="1"
-            min="1"
-          />
+        <p class="m-auto">Rs per</p>
+        <div class="form-group rate-group d-flex flex-column justify-content-end">
+          <select id="product_unit" name="product_unit" class="form-select" v-model="product_unit">
+            <option selected disabled value="">Choose Unit</option>
+            <option value="kg">Kilogram</option>
+            <option value="litre">Litre</option>
+            <option value="unit">Unit</option>
+          </select>
         </div>
       </div>
-      <div class="form-group">
-        <label for="product_category">Product Category</label>
+      <div class="d-flex flex-row w-100 justify-content-between">
+        <div class="form-group cat-stock w-50 d-flex flex-column justify-content-end mb-0">
+          <select
+            id="product_category"
+            name="product_category"
+            type="option"
+            class="form-select"
+            v-model="product_category"
+          >
+            <option selected disabled value="">Product Category</option>
+            <option v-for="category in categories" :value="category.id" :key="category.id">
+              {{ category.category_name }}
+            </option>
+          </select>
+        </div>
+        <div id="stockGroup" class="input-group cat-stock d-flex flex-column">
+          <label for="stock" class="mx-2">Stock</label>
+          <div id="stockInput" class="d-flex flex-row">
+            <input
+              id="stock"
+              type="number"
+              v-model="product_stock"
+              min="1"
+              step="1"
+              class="form-control"
+            />
+            <span id="stockUnit" class="input-group-text">
+              {{ product_unit }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group my-3">
+        <label for="date">Expiry Date</label>
         <Field
-          id="product_category"
-          name="product_category"
-          type="text"
-          class="form-control"
-          v-model="product_category"
+          type="date"
+          v-model="expiry_date"
+          class="form-control w-50"
+          name="date"
+          id="expiryDate"
         />
       </div>
       <button type="submit" class="btn btn-primary">Create Product</button>
@@ -303,12 +342,12 @@ export default {
   border: thin solid dimgray;
   padding: 2rem;
 }
-.numbers {
+.rate {
   justify-content: space-between;
   width: 100%;
 }
-.number-group {
-  width: 48%;
+.rate-group {
+  width: 40%;
 }
 .form-group {
   margin-bottom: 1rem;
@@ -337,7 +376,7 @@ img {
   cursor: pointer;
 }
 #resetImage:hover {
-  rotate: 90deg;
+  rotate: 180deg;
 }
 button:hover {
   cursor: pointer;
@@ -345,5 +384,14 @@ button:hover {
 }
 button {
   margin-right: 1rem;
+}
+#stockGroup {
+  width: 40%;
+}
+#stockUnit {
+  width: 20%;
+}
+#product_description {
+  height: 4rem;
 }
 </style>
