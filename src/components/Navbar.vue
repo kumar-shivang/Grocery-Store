@@ -86,6 +86,22 @@ export default {
         </form>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
+            <router-link
+              to="/manager/add_product"
+              v-if="store.$state.type === 'manager' && this.$route.name !== 'add_product'"
+              class="nav-link active"
+            >
+              Add Product
+            </router-link>
+            <router-link
+              to="/manager"
+              v-else-if="store.$state.type === 'manager' && this.$route.name === 'add_product'"
+              class="nav-link active"
+            >
+              Dashboard
+            </router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="login" v-if="!isLoggedIn" class="nav-link active"> Login </router-link>
             <div v-else class="nav-link active" @click="logout">Logout</div>
           </li>
