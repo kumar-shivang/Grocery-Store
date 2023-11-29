@@ -2,6 +2,8 @@
 import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
 import categoryRequestForm from '@/components/manager dashboard components/CategoryRequestForm.vue'
+import productCard from '@/components/manager dashboard components/productCard.vue'
+import categoryList from '@/components/manager dashboard components/CategoryList.vue'
 export default {
   name: 'ManagerDashboard',
   setup() {
@@ -13,14 +15,14 @@ export default {
   data() {
     return {
       manager: {},
-      categories: [],
       products: [],
-      noCategories: false,
       noProducts: false
     }
   },
   components: {
-    categoryRequestForm
+    categoryRequestForm,
+    productCard,
+    categoryList
   },
   mounted() {
     this.managerStore
@@ -29,17 +31,6 @@ export default {
         this.products = this.managerStore.products
         if (this.products.length === 0) {
           this.noProducts = true
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    this.managerStore
-      .fetchCategories()
-      .then(() => {
-        this.categories = this.managerStore.categories
-        if (this.categories.length === 0) {
-          this.noCategories = true
         }
       })
       .catch((error) => {
@@ -56,17 +47,10 @@ export default {
     </div>
     <div id="container" class="d-flex flex-row m-0 w-100">
       <div id="left">
-        <div id="top-left">
-          <h1>Top Left</h1>
-          <div v-if="noCategories">
-            <h3>No categories</h3>
-          </div>
-          <div v-else>
-            <div v-for="category in categories" :key="category.id">
-              <h3>
-                {{ category.category_name }}
-              </h3>
-            </div>
+        <div id="top-left" class="card">
+          <div>
+            <h3 class="card-title">Categories</h3>
+            <categoryList :categories="categories" class="card-body" />
           </div>
         </div>
         <div id="bottom-left">
@@ -77,12 +61,8 @@ export default {
         <div v-if="noProducts">
           <h3>No products</h3>
         </div>
-        <div v-else>
-          <div v-for="product in products" :key="product.id">
-            <h3>
-              {{ product.product_name }}
-            </h3>
-          </div>
+        <div v-else class="cards" v-for="product in products">
+          <product-card :product="product" />
         </div>
       </div>
     </div>
@@ -95,24 +75,20 @@ export default {
   height: var(--main-height);
 }
 #left {
-  width: 50%;
-  //height: 90%;
+  width: 40%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: start;
   border: thin solid dimgray;
-  //padding: 1rem;
 }
 #right {
-  width: 50%;
-  //height: 90%;
+  width: 60%;
   display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
   border: thin solid dimgray;
-  //padding: 1rem;
 }
 #title {
   height: 10%;
@@ -130,5 +106,13 @@ export default {
   height: 30%;
   width: 100%;
   border: thin solid dimgray;
+}
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  height: 30rem;
 }
 </style>
