@@ -1,5 +1,6 @@
 <script>
 import Navbar from '@/components/Navbar.vue'
+import Notification from '@/components/Notification.vue'
 import { useBaseStore } from '@/stores/baseStore'
 export default {
   name: 'App',
@@ -8,7 +9,8 @@ export default {
     return { store }
   },
   components: {
-    Navbar
+    Navbar,
+    Notification
   },
   beforeMount() {
     if (this.store.checkLogin()) {
@@ -25,6 +27,17 @@ export default {
       console.warn(this.store.$state.type)
       this.$router.push('/')
       console.log('pushed')
+    }
+  },
+  computed: {
+    notify() {
+      return this.store.$state.notification.show
+    },
+    message() {
+      return this.store.$state.notification.message
+    },
+    type() {
+      return this.store.$state.notification.type
     }
   }
 }
@@ -59,6 +72,7 @@ export default {
       </button>
     </span>
   </footer>
+  <Notification v-if="notify" :message="message" :type="type" />
 </template>
 
 <style scoped>

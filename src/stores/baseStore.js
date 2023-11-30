@@ -46,7 +46,12 @@ export const useBaseStore = defineStore('base', {
       },
       isLogged: false,
       loginError: '',
-      type: getCookie()[1]
+      type: getCookie()[1],
+      notification: {
+        message: '',
+        type: '',
+        show: false
+      }
     }
   },
   getters: {
@@ -137,6 +142,21 @@ export const useBaseStore = defineStore('base', {
       setTimeout(() => {
         this.loginError = ''
       }, 5000)
+    },
+    showNotification(message, type) {
+      this.notification.message = message
+      this.notification.type = type
+      this.notification.show = true
+      setTimeout(() => {
+        this.notification.show = false
+        this.notification.message = ''
+        this.notification.type = ''
+      }, 5000)
+    },
+    hideNotification() {
+      this.notification.show = false
+      this.notification.message = ''
+      this.notification.type = ''
     }
   }
 })
