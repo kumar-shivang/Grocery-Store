@@ -139,26 +139,43 @@ export const useAdminStore = defineStore({
         console.log('no token')
       }
     },
-    async approveCategoryRequest(categoryId) {
+    async approveCategoryRequest(categoryId, type) {
       if (this.access_token) {
-        const response = await fetch(
-          `http://localhost:5000/api/admin/approve_category/${categoryId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.access_token}`
-            },
-            method: 'PUT',
-            mode: 'cors'
+        if (type === 'add') {
+          const response = await fetch(
+            `http://localhost:5000/api/admin/approve_category/${categoryId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.access_token}`
+              },
+              method: 'PUT',
+              mode: 'cors'
+            }
+          )
+          if (response.ok) {
+            console.log('category request approved')
+          } else {
+            console.log(response.json())
           }
-        )
-        if (response.ok) {
-          console.log('category request approved')
-          await this.fetchCategoryRequests()
-        } else {
-          console.log(response.json())
         }
-      } else {
-        console.log('no token')
+        if (type === 'delete') {
+          const response = await fetch(
+            `http://localhost:5000/api/admin/approve_delete_category/${categoryId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.access_token}`
+              },
+              method: 'POST',
+              mode: 'cors'
+            }
+          )
+          let data = await response.json()
+          if (response.ok) {
+            store.showNotification('Category deleted', 'success')
+          } else {
+            store.showNotification(data.message, 'danger')
+          }
+        }
       }
     },
     async rejectCategoryRequest(categoryId) {
@@ -182,6 +199,7 @@ export const useAdminStore = defineStore({
       } else {
         console.log('no token')
       }
+      await this.fetchCategoryRequests()
     }
   }
 })
