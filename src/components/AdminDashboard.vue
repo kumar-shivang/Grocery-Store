@@ -4,7 +4,6 @@ import { useAdminStore } from '@/stores/adminStore'
 import CategoryTable from '@/components/admin dashboard components/CategoryTable.vue'
 import CategoryRequestTable from '@/components/admin dashboard components/CategoryRequestTable.vue'
 import ManagerRequestTable from '@/components/admin dashboard components/ManagerRequestTable.vue'
-import CategoryForm from '@/components/admin dashboard components/CategoryForm.vue'
 export default {
   name: 'AdminDashboard',
   setup() {
@@ -16,8 +15,7 @@ export default {
   components: {
     CategoryTable,
     CategoryRequestTable,
-    ManagerRequestTable,
-    CategoryForm
+    ManagerRequestTable
   }
 }
 </script>
@@ -29,15 +27,8 @@ export default {
     </div>
     <div id="container" class="d-flex flex-row m-0 w-100">
       <div id="left">
-        <div id="top-left">
-          <div class="w-100">
-            <h1>Categories</h1>
-            <CategoryTable />
-          </div>
-        </div>
-        <div id="bottom-left">
-          <CategoryForm />
-        </div>
+        <h1>Categories</h1>
+        <CategoryTable />
       </div>
       <div id="right">
         <div id="top-right">
@@ -80,9 +71,8 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
   align-items: start;
-  border: thin solid dimgray;
 }
 #right {
   width: 50%;
