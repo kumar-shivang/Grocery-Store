@@ -23,6 +23,7 @@ export default {
       <th><strong>ID</strong></th>
       <th><strong>Name</strong></th>
       <th><strong>Description</strong></th>
+      <th><strong>Type</strong></th>
       <th><strong>Approve</strong></th>
       <th><strong>Reject</strong></th>
     </tr>
@@ -30,8 +31,14 @@ export default {
       <td>{{ categoryRequest.id }}</td>
       <td>{{ categoryRequest.category_name }}</td>
       <td>{{ categoryRequest.category_description }}</td>
+      <td :class="categoryRequest.request_type">{{ categoryRequest.request_type }}</td>
       <td>
-        <span id="approve" @click="adminStore.approveCategoryRequest(categoryRequest.id)">
+        <span
+          id="approve"
+          @click="
+            adminStore.approveCategoryRequest(categoryRequest.id, categoryRequest.request_type)
+          "
+        >
           Approve
         </span>
       </td>
@@ -60,5 +67,17 @@ export default {
   text-decoration: underline;
   background-color: red;
   color: white;
+}
+.delete {
+  cursor: pointer;
+  color: red;
+}
+.add {
+  cursor: pointer;
+  color: green;
+}
+.edit {
+  cursor: pointer;
+  color: blue;
 }
 </style>
