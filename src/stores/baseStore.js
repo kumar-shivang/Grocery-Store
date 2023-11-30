@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { router } from '@/router/router'
 
 function getCookie() {
   let tokenExists = document.cookie
@@ -67,17 +68,42 @@ export const useBaseStore = defineStore('base', {
   },
 
   actions: {
-    checkLogin() {
+    async checkLogin() {
       ;[this.access_token, this.type] = getCookie()
-      console.log('checking login')
-      console.log(this.access_token, this.type)
       if (this.access_token !== '') {
-        this.isLogged = true
-        return true
+        const response = await fetch('http://localhost:5000/api/login/check_token', {
+          headers: {
+            Authorization: `Bearer ${this.access_token}`
+          },
+          method: 'GET',
+          mode: 'cors'
+        })
+        const data = await response.json()
+        console.log(data)
+        if (response.ok) {
+          console.log('token is valid')
+          this.isLogged = true
+          this.type = data.type
+          return true
+        } else {
+          console.log('token is invalid')
+          this.logout()
+          return false
+        }
+      } else {
+        let currentRoute = router.currentRoute.value.name
+        if (currentRoute === 'admin') {
+          this.type = 'admin'
+        } else if (currentRoute === 'manager') {
+          this.type = 'manager'
+        } else {
+          this.type = 'user'
+        }
+        return false
       }
-      return false
     },
     logout() {
+      console.log('logging out')
       this.access_token = ''
       this.user = {
         id: '',
@@ -91,8 +117,6 @@ export const useBaseStore = defineStore('base', {
     },
     setAccessToken(state, token, type) {
       this.access_token = token
-      this.type = type
-      setCookie(token, type)
       this.isLogged = true
     },
     async fetchAccessToken(username, password, type) {
