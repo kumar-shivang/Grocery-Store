@@ -7,7 +7,7 @@ import * as bootstrap from 'bootstrap'
 import * as popper from '@popperjs/core'
 
 import App from './App.vue'
-import router from './router/router'
+import { router } from './router/router'
 
 const app = createApp(App)
 
