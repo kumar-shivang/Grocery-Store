@@ -20,11 +20,11 @@ export default {
     signUp: false
   }),
   beforeMount() {
+    this.managerStore.$state.type = 'manager'
     if (this.baseStore.checkLogin()) {
       console.log('ManagerView beforeMount')
       console.log('Logged in as ' + this.baseStore.type)
       if (this.baseStore.type === 'manager') {
-        // this.managerStore.fetchManagerData()
         console.log('ok')
       } else {
         this.baseStore.logout()
