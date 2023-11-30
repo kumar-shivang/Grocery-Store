@@ -1,7 +1,6 @@
 <script>
 import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
-import categoryRequestForm from '@/components/manager dashboard components/CategoryRequestForm.vue'
 import productCard from '@/components/manager dashboard components/productCard.vue'
 import categoryList from '@/components/manager dashboard components/CategoryList.vue'
 export default {
@@ -20,7 +19,6 @@ export default {
     }
   },
   components: {
-    categoryRequestForm,
     productCard,
     categoryList
   },
@@ -42,19 +40,14 @@ export default {
 
 <template>
   <div id="dashboard">
-    <div id="title" class="w-100 d-flex flex-row align-items-center">
+    <div id="title" class="w-100 d-flex flex-row">
       <h2 class="mx-auto">Manager Dashboard</h2>
     </div>
     <div id="container" class="d-flex flex-row m-0 w-100">
       <div id="left">
-        <div id="top-left" class="card">
-          <div>
-            <h3 class="card-title">Categories</h3>
-            <categoryList :categories="categories" class="card-body" />
-          </div>
-        </div>
-        <div id="bottom-left">
-          <categoryRequestForm />
+        <div>
+          <h3 class="card-title">Categories</h3>
+          <categoryList :categories="categories" class="card-body" />
         </div>
       </div>
       <div id="right">
@@ -96,6 +89,7 @@ export default {
 }
 #container {
   height: 90%;
+  justify-content: space-between;
 }
 #top-left {
   height: 70%;
