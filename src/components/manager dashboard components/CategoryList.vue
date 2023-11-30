@@ -13,7 +13,8 @@ export default {
       categoryRequest: {
         category_name: '',
         category_description: ''
-      }
+      },
+      toDelete: null
     }
   },
   props: {
@@ -31,8 +32,22 @@ export default {
     }
   },
   methods: {
-    deleteCategory(id) {
-      this.managerStore.deleteCategory(id)
+    async deleteCategory(id) {
+      const response = await fetch(`http://localhost:5000/api/manager/delete_category/${id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + this.managerStore.access_token
+        }
+      })
+      let data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification(data.message, 'success')
+      } else {
+        this.baseStore.showNotification(data.message, 'danger')
+      }
+      // hide modal
+      this.$refs.deleteModalRef.click()
+      await this.managerStore.fetchCategories()
     },
     editCategory(id) {
       this.managerStore.editCategory(id)
@@ -94,6 +109,8 @@ export default {
         console.log('not ok')
         this.baseStore.showNotification(data.message, 'danger')
       }
+      this.categoryRequest.category_name = ''
+      this.categoryRequest.category_description = ''
     }
   }
 }
@@ -105,6 +122,7 @@ export default {
       <th><strong>ID</strong></th>
       <th><strong>Name</strong></th>
       <th><strong>Description</strong></th>
+
       <th><strong>Delete</strong></th>
       <th><strong>Edit</strong></th>
     </tr>
@@ -112,7 +130,17 @@ export default {
       <td>{{ category.id }}</td>
       <td class="name">{{ category.category_name }}</td>
       <td class="description">{{ category.category_description }}</td>
-      <td @click="deleteCategory(category.id)" class="bg-danger text-white edit">Delete</td>
+      <td class="edit">
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal"
+          v-on:click="toDelete = category.id"
+        >
+          Delete
+        </button>
+      </td>
       <td @click="editCategory(category.id)" class="edit">Edit</td>
     </tr>
     <tr class="insert">
@@ -121,7 +149,7 @@ export default {
         <input
           type="text"
           v-model="categoryRequest.category_name"
-          placeholder="New Category Name"
+          placeholder="Category Name"
           class="form-control-sm"
         />
       </td>
@@ -129,13 +157,43 @@ export default {
         <input
           type="text"
           v-model="categoryRequest.category_description"
-          placeholder="New Category Description"
+          placeholder="Category Description"
           class="form-control-sm"
         />
       </td>
       <td @click="requestCategory" class="bg-success text-white edit" colspan="2">Request</td>
     </tr>
   </table>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    ref="deleteModalRef"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">Are you sure to request deletion of this category?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" @click="deleteCategory(toDelete)">
+            Request Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -173,6 +231,7 @@ input {
   padding: 0;
   border: transparent;
   width: 100%;
+  text-align: center;
 }
 .description {
   width: 30%;
@@ -181,9 +240,18 @@ input {
   text-overflow: ellipsis;
 }
 .name {
-  width: 20%;
+  width: 25%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.btn-danger {
+  color: white;
+  background-color: red;
+  border-radius: 0;
+}
+.btn-danger:hover {
+  color: white;
+  background-color: darkred;
 }
 </style>
