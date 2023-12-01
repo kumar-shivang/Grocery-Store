@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { router } from '@/router/router'
 
 function getCookie() {
   let tokenExists = document.cookie
@@ -78,7 +77,6 @@ export const useBaseStore = defineStore('base', {
           method: 'GET',
           mode: 'cors'
         })
-        const data = await response.json()
         if (response.ok) {
           console.log('token is valid')
           this.isLogged = true
@@ -114,6 +112,7 @@ export const useBaseStore = defineStore('base', {
     },
     setAccessToken(state, token, type) {
       this.access_token = token
+      this.type = type
       this.isLogged = true
     },
     async fetchAccessToken(username, password, type) {
