@@ -20,7 +20,6 @@ export default {
     signUp: false
   }),
   beforeMount() {
-    this.managerStore.$state.type = 'manager'
     if (this.baseStore.checkLogin()) {
       console.log('ManagerView beforeMount')
       console.log('Logged in as ' + this.baseStore.type)
@@ -28,9 +27,11 @@ export default {
         console.log('ok')
       } else {
         this.baseStore.logout()
+        this.baseStore.$state.type = 'manager'
       }
     } else {
       console.log('ManagerView beforeMount not logged in')
+      this.baseStore.logout()
     }
   }
 }
