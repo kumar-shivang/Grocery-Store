@@ -181,7 +181,7 @@ export default {
       <td>
         <input
           type="text"
-          v-model="createCategory.category_name"
+          v-model="createCat.category_name"
           placeholder="Category Name"
           class="form-control"
         />
@@ -189,7 +189,7 @@ export default {
       <td>
         <input
           type="text"
-          v-model="createCategory.category_description"
+          v-model="createCat.category_description"
           placeholder="Category Description"
           class="form-control"
         />
