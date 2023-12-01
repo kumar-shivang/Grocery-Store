@@ -47,14 +47,12 @@ export default {
       let data = await response.json()
       if (response.ok) {
         this.baseStore.showNotification(this.cleanJSON(data.message), 'success')
-        this.createCat.category_name = ''
-        this.createCat.category_description = ''
         await this.adminStore.fetchCategories()
       } else {
         this.baseStore.showNotification(this.cleanJSON(data.message), 'danger')
-        this.createCat.category_name = ''
-        this.createCat.category_description = ''
       }
+      this.createCat.category_name = ''
+      this.createCat.category_description = ''
     },
     cleanJSON(string) {
       // write a function that sets this.message to a string removing everything expect what is between '' in the string
@@ -106,11 +104,10 @@ export default {
       if (response.ok) {
         this.baseStore.showNotification(data.message, 'success')
         await this.adminStore.fetchCategories()
-        this.cancelButtonClicked()
       } else {
         this.baseStore.showNotification(data.message, 'danger')
-        this.cancelButtonClicked()
       }
+      this.cancelButtonClicked()
     }
   }
 }
