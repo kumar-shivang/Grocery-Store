@@ -46,8 +46,8 @@ export default {
     <div id="container" class="d-flex flex-row m-0 w-100">
       <div id="left">
         <div>
-          <h3 class="card-title">Categories</h3>
-          <categoryList :categories="categories" class="card-body" />
+          <h3>Categories</h3>
+          <categoryList />
         </div>
       </div>
       <div id="right">
