@@ -10,26 +10,25 @@ export default {
   },
   data() {
     return {
-      categoryRequest: {
+      creationRequest: {
+        category_name: '',
+        category_description: ''
+      },
+      editRequest: {
+        category_id: null,
         category_name: '',
         category_description: ''
       },
       toDelete: null
     }
   },
-  props: {
-    categories: {
-      type: Array,
-      required: true
-    }
-  },
-  beforeMount() {
-    this.managerStore.fetchCategories()
-  },
   computed: {
     categories() {
       return this.managerStore.categories
     }
+  },
+  beforeMount() {
+    this.managerStore.fetchCategories()
   },
   methods: {
     async deleteCategory(id) {
@@ -45,50 +44,35 @@ export default {
       } else {
         this.baseStore.showNotification(data.message, 'danger')
       }
-      // hide modal
-      this.$refs.deleteModalRef.click()
       await this.managerStore.fetchCategories()
     },
-    editCategory(id) {
-      this.managerStore.editCategory(id)
+    async updateRequest() {
+      const response = await fetch(
+        `http://localhost:5000/api/manager/update_category/${this.editRequest.category_id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.managerStore.access_token
+          },
+          body: JSON.stringify({
+            category_id: this.editRequest.category_id,
+            category_name: this.editRequest.category_name,
+            category_description: this.editRequest.category_description
+          })
+        }
+      )
+      let data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification(data.message, 'success')
+      } else {
+        this.baseStore.showNotification(data.message, 'danger')
+      }
+      this.editRequest.category_id = null
+      this.editRequest.category_name = ''
+      this.editRequest.category_description = ''
     },
     async requestCategory() {
-      if (!this.categoryRequest.category_name) {
-        this.baseStore.showNotification('Category name is required', 'danger')
-        return
-      }
-      if (this.categoryRequest.category_name.length < 4) {
-        this.baseStore.showNotification(
-          'Category name must be at least 4 characters long',
-          'danger'
-        )
-        return
-      }
-      if (this.categoryRequest.category_name.length > 20) {
-        this.baseStore.showNotification(
-          'Category name must be at most 20 characters long',
-          'danger'
-        )
-        return
-      }
-      if (!this.categoryRequest.category_description) {
-        this.baseStore.showNotification('Category description is required', 'danger')
-        return
-      }
-      if (this.categoryRequest.category_description.length < 10) {
-        this.baseStore.showNotification(
-          'Category description must be at least 10 characters long',
-          'danger'
-        )
-        return
-      }
-      if (this.categoryRequest.category_description.length > 140) {
-        this.baseStore.showNotification(
-          'Category description must be at most 140 characters long',
-          'danger'
-        )
-        return
-      }
       const response = await fetch('http://localhost:5000/api/manager/request_category', {
         method: 'POST',
         headers: {
@@ -96,9 +80,8 @@ export default {
           Authorization: 'Bearer ' + this.managerStore.access_token
         },
         body: JSON.stringify({
-          category_name: this.categoryRequest.category_name,
-          category_description: this.categoryRequest.category_description,
-          request_type: 'add'
+          category_name: this.creationRequest.category_name,
+          category_description: this.creationRequest.category_description
         })
       })
       let data = await response.json()
@@ -109,8 +92,18 @@ export default {
         console.log('not ok')
         this.baseStore.showNotification(data.message, 'danger')
       }
-      this.categoryRequest.category_name = ''
-      this.categoryRequest.category_description = ''
+      this.creationRequest.category_name = ''
+      this.creationRequest.category_description = ''
+    },
+    editButtonClicked(id, name, description) {
+      this.editRequest.category_id = id
+      this.editRequest.category_name = name
+      this.editRequest.category_description = description
+    },
+    cancelButtonClicked() {
+      this.editRequest.category_id = null
+      this.editRequest.category_name = ''
+      this.editRequest.category_description = ''
     }
   }
 }
@@ -128,8 +121,30 @@ export default {
     </tr>
     <tr v-for="category in categories">
       <td>{{ category.id }}</td>
-      <td class="name">{{ category.category_name }}</td>
-      <td class="description">{{ category.category_description }}</td>
+      <td class="name" v-if="category.id !== editRequest.category_id">
+        {{ category.category_name }}
+      </td>
+      <td class="name" v-else>
+        <input
+          type="text"
+          v-model="editRequest.category_name"
+          placeholder="category.category_name"
+          class="form-control-sm"
+        />
+      </td>
+
+      <td class="description" v-if="category.id !== editRequest.category_id">
+        {{ category.category_description }}
+      </td>
+      <td class="description" v-else>
+        <input
+          type="text"
+          v-model="editRequest.category_description"
+          placeholder="category.category_description"
+          class="form-control-sm"
+        />
+      </td>
+
       <td class="edit">
         <button
           type="button"
@@ -137,18 +152,37 @@ export default {
           data-bs-toggle="modal"
           data-bs-target="#deleteModal"
           v-on:click="toDelete = category.id"
+          :disabled="category.id === 1"
+          v-if="editRequest.category_id !== category.id"
         >
           Delete
         </button>
+        <button v-else class="btn btn-outline-dark" @click="cancelButtonClicked">
+          Cancel <i class="bi bi-x" />
+        </button>
       </td>
-      <td @click="editCategory(category.id)" class="edit">Edit</td>
+      <td>
+        <button
+          class="btn btn-primary"
+          @click="
+            editButtonClicked(category.id, category.category_name, category.category_description)
+          "
+          :disabled="category.id === 1"
+          v-if="editRequest.category_id !== category.id"
+        >
+          Edit
+        </button>
+        <button class="btn btn-success" @click="updateRequest" :disabled="category.id === 1" v-else>
+          Save
+        </button>
+      </td>
     </tr>
     <tr class="insert">
       <td><strong style="font-size: 90%">New</strong></td>
       <td>
         <input
           type="text"
-          v-model="categoryRequest.category_name"
+          v-model="creationRequest.category_name"
           placeholder="Category Name"
           class="form-control-sm"
         />
@@ -156,7 +190,7 @@ export default {
       <td>
         <input
           type="text"
-          v-model="categoryRequest.category_description"
+          v-model="creationRequest.category_description"
           placeholder="Category Description"
           class="form-control-sm"
         />
@@ -187,7 +221,12 @@ export default {
         <div class="modal-body">Are you sure to request deletion of this category?</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" @click="deleteCategory(toDelete)">
+          <button
+            type="button"
+            class="btn btn-danger"
+            @click="deleteCategory(toDelete)"
+            data-bs-dismiss="modal"
+          >
             Request Delete
           </button>
         </div>
@@ -248,10 +287,13 @@ input {
 .btn-danger {
   color: white;
   background-color: red;
-  border-radius: 0;
 }
 .btn-danger:hover {
   color: white;
   background-color: darkred;
+}
+.btn {
+  border-radius: 0;
+  border: transparent;
 }
 </style>
