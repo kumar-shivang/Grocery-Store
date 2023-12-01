@@ -33,7 +33,7 @@ function setCookie(token, type) {
 
 function deleteCookie() {
   document.cookie = `access_token=;type=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
-  document.cookie = `login_type=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
+  document.cookie = `login_type=user; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`
 }
 
 export const useBaseStore = defineStore('base', {
@@ -68,10 +68,10 @@ export const useBaseStore = defineStore('base', {
   },
 
   actions: {
-    async checkLogin() {
-      ;[this.access_token, this.type] = getCookie()
-      if (this.access_token !== '') {
-        const response = await fetch('http://localhost:5000/api/login/check_token', {
+    async checkLogin(type) {
+      let access_token = getCookie()[0]
+      if (access_token !== '') {
+        const response = await fetch('http://localhost:5000/api/login/check_token/' + type, {
           headers: {
             Authorization: `Bearer ${this.access_token}`
           },
@@ -82,22 +82,20 @@ export const useBaseStore = defineStore('base', {
         if (response.ok) {
           console.log('token is valid')
           this.isLogged = true
-          this.type = data.type
-          return [true, data.type]
+          this.type = type
+          this.access_token = access_token
+          setCookie(access_token, type)
+          return true
         } else {
           console.log('token is invalid')
           this.logout()
+          this.type = type
           return false
         }
       } else {
-        let currentRoute = router.currentRoute.value.name
-        if (currentRoute === 'admin') {
-          this.type = 'admin'
-        } else if (currentRoute === 'manager') {
-          this.type = 'manager'
-        } else {
-          this.type = 'user'
-        }
+        console.log('token does not exist')
+        this.logout()
+        this.type = type
         return false
       }
     },
@@ -109,8 +107,8 @@ export const useBaseStore = defineStore('base', {
         username: '',
         email: ''
       }
-      this.type = 'user'
       this.isLogged = false
+      this.type = 'user'
       deleteCookie()
       console.log('logged out')
     },
