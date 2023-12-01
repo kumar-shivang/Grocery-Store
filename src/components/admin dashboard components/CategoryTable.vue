@@ -10,11 +10,16 @@ export default {
   },
   data() {
     return {
-      categoryRequest: {
+      createCat: {
         category_name: '',
         category_description: ''
       },
-      toDelete: null
+      toDelete: null,
+      editCat: {
+        category_id: null,
+        category_name: '',
+        category_description: ''
+      }
     }
   },
   beforeMount() {
@@ -35,20 +40,20 @@ export default {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify({
-          category_name: this.categoryRequest.category_name,
-          category_description: this.categoryRequest.category_description
+          category_name: this.createCat.category_name,
+          category_description: this.createCat.category_description
         })
       })
       let data = await response.json()
       if (response.ok) {
         this.baseStore.showNotification(this.cleanJSON(data.message), 'success')
-        this.categoryRequest.category_name = ''
-        this.categoryRequest.category_description = ''
+        this.createCat.category_name = ''
+        this.createCat.category_description = ''
         await this.adminStore.fetchCategories()
       } else {
         this.baseStore.showNotification(this.cleanJSON(data.message), 'danger')
-        this.categoryRequest.category_name = ''
-        this.categoryRequest.category_description = ''
+        this.createCat.category_name = ''
+        this.createCat.category_description = ''
       }
     },
     cleanJSON(string) {
@@ -57,7 +62,56 @@ export default {
       let end = string.indexOf(']')
       return (this.message = string.slice(start + 1, end))
     },
-    async deleteCategory() {}
+    async deleteCategory() {
+      const response = await fetch(`http://localhost:5000/api/admin/category/${this.toDelete}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + this.adminStore.access_token
+        }
+      })
+      let data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification(this.cleanJSON(data.message), 'success')
+      } else {
+        this.baseStore.showNotification(this.cleanJSON(data.message), 'danger')
+      }
+      await this.adminStore.fetchCategories()
+    },
+    editButtonClicked(id, name, description) {
+      this.editCat.category_id = id
+      this.editCat.category_name = name
+      this.editCat.category_description = description
+    },
+    cancelButtonClicked() {
+      this.editCat.category_id = null
+      this.editCat.category_name = ''
+      this.editCat.category_description = ''
+    },
+    async editCategory() {
+      const response = await fetch(
+        `http://localhost:5000/api/admin/update_category/${this.editCat.category_id}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${this.adminStore.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            category_name: this.editCat.category_name,
+            category_description: this.editCat.category_description
+          })
+        }
+      )
+      const data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification(data.message, 'success')
+        await this.adminStore.fetchCategories()
+        this.cancelButtonClicked()
+      } else {
+        this.baseStore.showNotification(data.message, 'danger')
+        this.cancelButtonClicked()
+      }
+    }
   }
 }
 </script>
@@ -72,8 +126,26 @@ export default {
     </tr>
     <tr v-for="category in categories" :key="category.id">
       <td>{{ category.id }}</td>
-      <td>{{ category.category_name }}</td>
-      <td>{{ category.category_description }}</td>
+      <td v-if="editCat.category_id !== category.id">{{ category.category_name }}</td>
+      <td v-else>
+        <input
+          type="text"
+          v-model="editCat.category_name"
+          :placeholder="category.category_name"
+          class="form-control"
+        />
+      </td>
+
+      <td v-if="editCat.category_id !== category.id">{{ category.category_description }}</td>
+      <td v-else>
+        <input
+          type="text"
+          v-model="editCat.category_description"
+          :placeholder="category.category_description"
+          class="form-control"
+        />
+      </td>
+
       <td>
         <button
           type="button"
@@ -81,17 +153,28 @@ export default {
           data-bs-toggle="modal"
           data-bs-target="#deleteModal"
           v-on:click="toDelete = category.id"
+          v-if="editCat.category_id !== category.id"
+          :disabled="category.id === 1"
         >
           Delete
         </button>
+        <button type="button" class="btn btn-primary cancel" @click="cancelButtonClicked" v-else>
+          Cancel <i class="bi bi-x" />
+        </button>
       </td>
-      <td @click="editCategory(category.id)">
+      <td>
         <button
           type="button"
           class="btn btn-primary edit"
-          data-bs-toggle="modal"
-          data-bs-target="#editModal"
+          @click="
+            editButtonClicked(category.id, category.category_name, category.category_description)
+          "
+          v-if="editCat.category_id !== category.id"
+          :disabled="category.id === 1"
         >
+          Edit
+        </button>
+        <button type="button" class="btn btn-success edit" @click="editCategory" v-else>
           Edit
         </button>
       </td>
@@ -101,7 +184,7 @@ export default {
       <td>
         <input
           type="text"
-          v-model="categoryRequest.category_name"
+          v-model="createCategory.category_name"
           placeholder="Category Name"
           class="form-control"
         />
@@ -109,7 +192,7 @@ export default {
       <td>
         <input
           type="text"
-          v-model="categoryRequest.category_description"
+          v-model="createCategory.category_description"
           placeholder="Category Description"
           class="form-control"
         />
@@ -119,6 +202,40 @@ export default {
       </td>
     </tr>
   </table>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteModalLabel">Delete Category</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">Are you sure you want to delete this category?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="deleteCategory"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -154,7 +271,6 @@ input {
 }
 .edit {
   cursor: pointer;
-  border: transparent;
   border-radius: 0;
   color: blue;
 }
@@ -165,7 +281,6 @@ input {
 }
 .delete {
   cursor: pointer;
-  border: transparent;
   border-radius: 0;
   color: orangered;
 }
@@ -178,11 +293,17 @@ input {
   cursor: pointer;
   color: green;
   border-radius: 0;
-  border: transparent;
 }
 .create:hover {
   text-decoration: underline;
   background-color: green;
   color: white;
+}
+.btn {
+  border-radius: 0;
+  border: transparent;
+}
+.cancel {
+  padding: 2px;
 }
 </style>
