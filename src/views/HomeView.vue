@@ -20,20 +20,10 @@ export default {
     }
   },
   beforeMount() {
-    if (this.baseStore.checkLogin()) {
-      console.log('HomeView beforeMount')
-      if (this.baseStore.type === 'admin') {
-        console.log('HomeView beforeMount admin')
-        console.log(this.baseStore.$state.type)
-        this.$router.push('/admin')
-      } else if (this.baseStore.type === 'manager') {
-        console.log('HomeView beforeMount manager')
-        console.log(this.baseStore.$state.type)
-        this.$router.push('/manager')
-      } else {
-        console.log('HomeView beforeMount user')
-        console.log(this.baseStore.$state.type)
-      }
+    if (this.baseStore.checkLogin('user')) {
+      console.log('user is logged in')
+    } else {
+      console.log('user is not logged in')
     }
   }
 }
