@@ -1,7 +1,6 @@
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import { useBaseStore } from '@/stores/baseStore'
-import HomeView from '@/views/HomeView.vue'
 export default {
   name: 'LoginForm',
   setup() {
@@ -10,7 +9,6 @@ export default {
     return { store }
   },
   components: {
-    HomeView,
     Form,
     Field,
     ErrorMessage
