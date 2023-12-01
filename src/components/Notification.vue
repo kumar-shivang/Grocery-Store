@@ -18,10 +18,6 @@ export default {
         return ['success', 'danger', 'info'].includes(value)
       },
       default: 'success'
-    },
-    got_response: {
-      type: Boolean,
-      required: true
     }
   },
   methods: {
