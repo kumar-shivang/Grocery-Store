@@ -20,18 +20,10 @@ export default {
     signUp: false
   }),
   beforeMount() {
-    if (this.baseStore.checkLogin()) {
-      console.log('ManagerView beforeMount')
-      console.log('Logged in as ' + this.baseStore.type)
-      if (this.baseStore.type === 'manager') {
-        console.log('ok')
-      } else {
-        this.baseStore.logout()
-        this.baseStore.$state.type = 'manager'
-      }
+    if (this.baseStore.checkLogin('manager')) {
+      this.managerStore.fetchProducts()
     } else {
-      console.log('ManagerView beforeMount not logged in')
-      this.baseStore.logout()
+      this.baseStore.$state.type = 'manager'
     }
   }
 }
