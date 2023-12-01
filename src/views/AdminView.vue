@@ -22,20 +22,12 @@ export default {
     adminStore: useAdminStore()
   }),
   beforeMount() {
-    this.baseStore.type = 'admin'
-    let checkLogin = this.baseStore.checkLogin()
-    if (checkLogin[0]) {
-      console.log('AdminView beforeMount')
-      console.log('Logged in as ' + this.baseStore.type)
-      if (this.baseStore.type === 'admin') {
-        this.adminStore.fetchCategoryRequests()
-        this.adminStore.fetchCategories()
-        this.adminStore.fetchManagerRequests()
-      } else {
-        this.baseStore.logout()
-      }
+    if (this.baseStore.checkLogin('admin')) {
+      this.adminStore.fetchCategoryRequests()
+      this.adminStore.fetchCategories()
+      this.adminStore.fetchManagerRequests()
     } else {
-      console.log('AdminView beforeMount not logged in')
+      this.baseStore.$state.type = 'admin'
     }
   }
 }
