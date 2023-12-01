@@ -153,9 +153,11 @@ export const useAdminStore = defineStore({
             }
           )
           if (response.ok) {
-            console.log('category request approved')
+            store.showNotification('Category approved', 'success')
+            await this.fetchCategoryRequests()
           } else {
-            console.log(response.json())
+            store.showNotification('Something went wrong', 'danger')
+            await this.fetchCategoryRequests()
           }
         }
         if (type === 'delete') {
