@@ -129,7 +129,7 @@ export default {
           type="text"
           v-model="editRequest.category_name"
           placeholder="category.category_name"
-          class="form-control-sm"
+          class="form-control"
         />
       </td>
 
@@ -141,7 +141,7 @@ export default {
           type="text"
           v-model="editRequest.category_description"
           placeholder="category.category_description"
-          class="form-control-sm"
+          class="form-control"
         />
       </td>
 
