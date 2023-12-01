@@ -12,14 +12,6 @@ export default {
     Navbar,
     Notification
   },
-  beforeMount() {
-    if (this.store.checkLogin()) {
-      console.log('App beforeMount')
-      console.log('Logged in as ' + this.store.type)
-    } else {
-      console.log('App beforeMount not logged in')
-    }
-  },
   methods: {
     open_as_user() {
       console.log('open as user')
