@@ -79,12 +79,11 @@ export const useBaseStore = defineStore('base', {
           mode: 'cors'
         })
         const data = await response.json()
-        console.log(data)
         if (response.ok) {
           console.log('token is valid')
           this.isLogged = true
           this.type = data.type
-          return true
+          return [true, data.type]
         } else {
           console.log('token is invalid')
           this.logout()
