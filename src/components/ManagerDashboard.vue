@@ -91,16 +91,6 @@ export default {
   height: 90%;
   justify-content: space-between;
 }
-#top-left {
-  height: 70%;
-  width: 100%;
-  border: thin solid dimgray;
-}
-#bottom-left {
-  height: 30%;
-  width: 100%;
-  border: thin solid dimgray;
-}
 .cards {
   display: flex;
   flex-wrap: wrap;
