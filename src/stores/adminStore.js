@@ -154,10 +154,8 @@ export const useAdminStore = defineStore({
           )
           if (response.ok) {
             store.showNotification('Category approved', 'success')
-            await this.fetchCategoryRequests()
           } else {
             store.showNotification('Something went wrong', 'danger')
-            await this.fetchCategoryRequests()
           }
         }
         if (type === 'delete') {
@@ -178,12 +176,31 @@ export const useAdminStore = defineStore({
             store.showNotification(data.message, 'danger')
           }
         }
+        if (type === 'update') {
+          const response = await fetch(
+            `http://localhost:5000/api/admin/approve_update/${categoryId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.access_token}`
+              },
+              method: 'POST',
+              mode: 'cors'
+            }
+          )
+          let data = await response.json()
+          if (response.ok) {
+            store.showNotification('Category edited', 'success')
+          } else {
+            store.showNotification(data.message, 'danger')
+          }
+        }
+        await this.fetchCategoryRequests()
       }
     },
     async rejectCategoryRequest(categoryId) {
       if (this.access_token) {
         const response = await fetch(
-          `http://localhost:5000/api/admin/reject_category/${categoryId}`,
+          `http://localhost:5000/api/admin/reject_request/${categoryId}`,
           {
             headers: {
               Authorization: `Bearer ${this.access_token}`
@@ -193,10 +210,11 @@ export const useAdminStore = defineStore({
           }
         )
         if (response.ok) {
-          console.log('category request rejected')
+          this.store.showNotification('Category rejected', 'success')
           await this.fetchCategoryRequests()
         } else {
-          console.log(response.json())
+          this.store.showNotification('Something went wrong', 'danger')
+          await this.fetchCategoryRequests()
         }
       } else {
         console.log('no token')
