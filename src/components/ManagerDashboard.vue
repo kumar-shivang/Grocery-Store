@@ -13,27 +13,27 @@ export default {
   },
   data() {
     return {
-      manager: {},
-      products: [],
-      noProducts: false
+      manager: {}
     }
   },
   components: {
     productCard,
     categoryList
   },
-  mounted() {
-    this.managerStore
-      .fetchProducts()
-      .then(() => {
-        this.products = this.managerStore.products
-        if (this.products.length === 0) {
-          this.noProducts = true
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+  beforeMount() {
+    this.managerStore.fetchProducts()
+  },
+  computed: {
+    products() {
+      let prod = this.managerStore.getProducts
+      if (prod.length === 0) {
+        this.noProducts = true
+      }
+      return prod
+    },
+    noProducts() {
+      return this.managerStore.getProducts.length === 0
+    }
   }
 }
 </script>
