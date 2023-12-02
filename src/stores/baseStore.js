@@ -6,7 +6,6 @@ function getCookie() {
     .some((item) => item.trim().startsWith('access_token='))
   let typeExists = document.cookie.split(';').some((item) => item.trim().startsWith('login_type='))
   if (tokenExists && typeExists) {
-    console.log('both cookies exist')
     let access_token = document.cookie
       .split('; ')
       .find((row) => row.startsWith('access_token'))
@@ -67,6 +66,30 @@ export const useBaseStore = defineStore('base', {
   },
 
   actions: {
+    async getUser() {
+      const response = await fetch('http://localhost:5000/api/login/get_user', {
+        headers: {
+          Authorization: `Bearer ${this.access_token}`
+        },
+        method: 'GET',
+        mode: 'cors'
+      })
+      const data = await response.json()
+      if (response.ok) {
+        return {
+          id: data.id,
+          username: data.username,
+          email: data.email
+        }
+      } else {
+        console.log(data)
+        return {
+          id: '',
+          username: '',
+          email: ''
+        }
+      }
+    },
     async checkLogin(type) {
       let access_token = getCookie()[0]
       if (access_token !== '') {
@@ -80,16 +103,14 @@ export const useBaseStore = defineStore('base', {
         if (response.ok) {
           console.log('token is valid')
           this.isLogged = true
-          this.type = type
-          this.access_token = access_token
-          setCookie(access_token, type)
+          this.user = await this.getUser()
           return true
         } else {
           console.log('token is invalid')
           this.logout()
-          this.type = type
           return false
         }
+        this.type = type
       } else {
         console.log('token does not exist')
         this.logout()
@@ -99,6 +120,7 @@ export const useBaseStore = defineStore('base', {
     },
     logout() {
       console.log('logging out')
+      deleteCookie()
       this.access_token = ''
       this.user = {
         id: '',
@@ -107,7 +129,6 @@ export const useBaseStore = defineStore('base', {
       }
       this.isLogged = false
       this.type = 'user'
-      deleteCookie()
       console.log('logged out')
     },
     setAccessToken(state, token, type) {
@@ -116,21 +137,14 @@ export const useBaseStore = defineStore('base', {
       this.isLogged = true
     },
     async fetchAccessToken(username, password, type) {
-      console.log('fetching access token')
-      console.log(username, password, type)
       ;[this.access_token, this.type] = getCookie()
       if (this.access_token !== '' && this.type === type) {
-        console.log('access token exists')
         this.isLogged = true
-        setCookie(this.access_token, type)
         return true
       } else if (this.access_token !== '' && this.type !== type) {
-        console.log('access token exists but type is different')
         this.logout()
         return false
       } else {
-        console.log('access token does not exist')
-        console.log(type)
         const response = await fetch('http://localhost:5000/api/login/' + type, {
           method: 'POST',
           headers: {
@@ -139,20 +153,14 @@ export const useBaseStore = defineStore('base', {
           body: JSON.stringify({ username, password })
         })
         const data = await response.json()
-        console.log('response received')
-        console.log(data)
         if (data.access_token) {
-          console.log('access token received')
           this.access_token = data.access_token
           this.type = type
           this.isLogged = true
           setCookie(data.access_token, type)
-          console.log('cookie set to: ' + document.cookie)
           return true
         } else {
-          console.log('access token not received')
           this.showError(data.message)
-          console.log(data)
           return false
         }
       }
