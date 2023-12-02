@@ -44,6 +44,7 @@ export const useManagerStore = defineStore({
             console.log('pushed')
           }
         } else {
+          this.products = []
           console.log(data)
         }
       } else {
