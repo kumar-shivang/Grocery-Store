@@ -20,6 +20,10 @@ export default {
     addStock: {
       id: null,
       stock: ''
+    },
+    updateRate: {
+      id: null,
+      rate: ''
     }
   }),
   props: {
@@ -71,6 +75,10 @@ export default {
       this.addStock.id = null
       this.addStock.stock = ''
     },
+    updateRateClicked() {
+      this.updateRate.id = this.product.id
+      this.updateRate.rate = this.product.rate
+    },
     async updateStock() {
       const response = await fetch(
         `http://localhost:5000/api/manager/update_stock/${this.addStock.id}`,
@@ -93,6 +101,69 @@ export default {
         this.store.showNotification(data.message, 'danger')
       }
       this.cancelStock()
+    },
+    async editRate() {
+      const response = await fetch(
+        `http://localhost:5000/api/manager/update_rate/${this.updateRate.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.store.access_token
+          },
+          body: JSON.stringify({
+            rate: this.updateRate.rate
+          })
+        }
+      )
+      let data = await response.json()
+      if (response.ok) {
+        this.store.showNotification(data.message, 'success')
+        await this.managerStore.fetchProducts()
+      } else {
+        this.store.showNotification(data.message, 'danger')
+      }
+      this.updateRate.id = null
+    },
+    async deleteProduct(id) {
+      const response = await fetch(`http://localhost:5000/api/manager/delete_product/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + this.store.access_token
+        }
+      })
+      let data = await response.json()
+      if (response.ok) {
+        this.store.showNotification(data.message, 'success')
+        await this.managerStore.fetchProducts()
+      } else {
+        this.store.showNotification(data.message, 'danger')
+      }
+      await this.managerStore.fetchProducts()
+    },
+    async updateProductReq() {
+      const response = await fetch(
+        `http://localhost:5000/api/manager/update_product/${this.editingProduct.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.store.access_token
+          },
+          body: JSON.stringify({
+            name: this.editingProduct.name,
+            description: this.editingProduct.description
+          })
+        }
+      )
+      let data = await response.json()
+      if (response.ok) {
+        this.store.showNotification(data.message, 'success')
+        await this.managerStore.fetchProducts()
+      } else {
+        this.store.showNotification(data.message, 'danger')
+      }
+      this.cancelEdit()
     }
   }
 }
@@ -106,8 +177,9 @@ export default {
         <i class="bi bi-three-dots" data-bs-toggle="dropdown" aria-expanded="false"> </i>
         <ul class="dropdown-menu">
           <li><p class="dropdown-item" @click="editProduct">Edit</p></li>
-          <li><p class="dropdown-item" @click="editStock">Edit Stock</p></li>
-          <li data-bs-toggle="modal" data-bs-target="#deleteModal">
+          <li><p class="dropdown-item" @click="editStock">Update Stock</p></li>
+          <li><p class="dropdown-item" @click="updateRateClicked">Update Rate</p></li>
+          <li data-bs-toggle="modal" data-bs-target="#productDeleteModal">
             <p class="dropdown-item text-danger">Delete</p>
           </li>
         </ul>
@@ -119,15 +191,34 @@ export default {
         <h3 class="card-title">
           {{ product.name }}
         </h3>
-        <div class="card-subtitle">
+        <div class="card-text">
           {{ product.description }}
         </div>
+        <br />
+        <div class="card-subtitle text-danger">Expiry Date {{ product.expiry_date }}</div>
+
         <hr />
         <div class="card-text stock">{{ product.current_stock }} {{ product.unit }} in stock</div>
       </div>
       <div class="card-footer">
-        <span class="rate" style="display: inline">{{ product.rate }}₹</span>
-        per {{ product.unit }}
+        <span class="rate" style="display: inline" v-if="!updateRate.id">{{ product.rate }}₹</span>
+        <span v-else class="updateRate">
+          <input
+            type="number"
+            v-model.number="updateRate.rate"
+            class="form-control form-control-sm"
+            name="rate"
+            autocomplete="false"
+            min="0"
+            step="1"
+          />
+          ₹
+          <div class="d-flex flex-column">
+            <i class="bi bi-check2-square text-success" @click="editRate"></i>
+            <i class="bi bi-x-square text-danger" @click="updateRate.id = null"></i>
+          </div>
+        </span>
+        <span>per {{ product.unit }}</span>
       </div>
     </div>
     <div v-else-if="editing">
@@ -147,21 +238,11 @@ export default {
           class="form-control"
           name="description"
         />
-        <label class="form-label" for="rate">New Rate</label>
-        <input
-          type="number"
-          v-model.number="editingProduct.rate"
-          class="form-control"
-          name="rate"
-          autocomplete="false"
-          min="0.5"
-          step="0.5"
-        />
       </div>
 
       <div class="card-footer">
-        <button class="btn btn-success" @click="editing = false">Save</button>
-        <button class="btn btn-danger" @click="editing = false">Cancel</button>
+        <button class="btn btn-success" @click="updateProductReq">Save</button>
+        <button class="btn btn-danger" @click="cancelEdit">Cancel</button>
       </div>
     </div>
     <div v-else-if="addStock.id">
@@ -200,7 +281,7 @@ export default {
   </div>
   <div
     class="modal fade"
-    id="deleteModal"
+    id="productDeleteModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
@@ -216,11 +297,16 @@ export default {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">Are you sure to request deletion of this category?</div>
+        <div class="modal-body">Are you sure to request deletion of this product?</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-            Request Delete
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="deleteProduct(this.product.id)"
+          >
+            Delete Product
           </button>
         </div>
       </div>
@@ -235,7 +321,7 @@ export default {
   margin: 1rem;
   border: 1px solid black;
 }
-.card-img-top {
+.card-img {
   width: 100%;
   height: 15rem;
   object-fit: cover;
@@ -274,10 +360,7 @@ button:hover {
   position: relative;
   display: inline-block;
 }
-.bi-pencil {
-  color: black;
-  zoom: 0.5;
-}
+
 li {
   cursor: pointer;
   display: flex;
@@ -290,5 +373,24 @@ li {
   justify-content: space-around;
   align-items: center;
   margin-top: 1rem;
+}
+.updateButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.updateRate {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.form-control-sm {
+  width: 50%;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 </style>
