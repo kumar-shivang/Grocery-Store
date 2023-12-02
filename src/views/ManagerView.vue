@@ -22,6 +22,7 @@ export default {
   beforeMount() {
     if (this.baseStore.checkLogin('manager')) {
       this.managerStore.fetchProducts()
+      this.managerStore.fetchCategories()
     } else {
       this.baseStore.$state.type = 'manager'
     }
