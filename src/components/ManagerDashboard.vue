@@ -54,8 +54,10 @@ export default {
         <div v-if="noProducts">
           <h3>No products</h3>
         </div>
-        <div v-else class="cards" v-for="product in products">
-          <product-card :product="product" />
+        <div v-else class="cards">
+          <div v-for="product in products">
+            <product-card :product="product" />
+          </div>
         </div>
       </div>
     </div>
@@ -68,20 +70,23 @@ export default {
   height: var(--main-height);
 }
 #left {
-  width: 40%;
+  width: 38%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: start;
   border: thin solid dimgray;
+  overflow: auto;
 }
 #right {
-  width: 60%;
+  width: 62%;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: flex-start;
   border: thin solid dimgray;
+  overflow: auto;
 }
 #title {
   height: 10%;
