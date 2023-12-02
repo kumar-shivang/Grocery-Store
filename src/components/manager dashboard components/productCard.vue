@@ -1,7 +1,14 @@
 <script>
-import { Dropdown } from 'bootstrap'
+import { useBaseStore } from '@/stores/baseStore'
+import { useManagerStore } from '@/stores/managerStore'
+
 export default {
   name: 'productCard',
+  setup() {
+    const store = useBaseStore()
+    const managerStore = useManagerStore()
+    return { store, managerStore }
+  },
   data: () => ({
     editing: false,
     editingProduct: {
@@ -63,6 +70,29 @@ export default {
     cancelStock() {
       this.addStock.id = null
       this.addStock.stock = ''
+    },
+    async updateStock() {
+      const response = await fetch(
+        `http://localhost:5000/api/manager/update_stock/${this.addStock.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + this.store.access_token
+          },
+          body: JSON.stringify({
+            quantity: this.addStock.stock
+          })
+        }
+      )
+      let data = await response.json()
+      if (response.ok) {
+        this.store.showNotification(data.message, 'success')
+        await this.managerStore.fetchProducts()
+      } else {
+        this.store.showNotification(data.message, 'danger')
+      }
+      this.cancelStock()
     }
   }
 }
@@ -163,7 +193,7 @@ export default {
         </div>
       </div>
       <div class="card-footer">
-        <button class="btn btn-success" @click="editStock = false">Save</button>
+        <button class="btn btn-success" @click="updateStock">Save</button>
         <button class="btn btn-danger" @click="cancelStock">Cancel</button>
       </div>
     </div>
