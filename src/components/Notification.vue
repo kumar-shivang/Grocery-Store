@@ -42,10 +42,11 @@ export default {
 .notification {
   position: fixed;
   /* this should be displayed in bottom right corner*/
-  bottom: 20px;
+  top: 20px;
   right: 20px;
   z-index: 1000;
   padding: 2rem;
+  width: 20%;
 }
 .bi {
   cursor: pointer;
