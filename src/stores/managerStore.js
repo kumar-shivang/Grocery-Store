@@ -6,11 +6,7 @@ const store = useBaseStore()
 export const useManagerStore = defineStore({
   id: 'manager',
   state: () => ({
-    manager: {
-      id: '',
-      username: '',
-      email: ''
-    },
+    manager: store.getUserData,
     products: [],
     categories: [],
     access_token: store.access_token
@@ -41,8 +37,12 @@ export const useManagerStore = defineStore({
         })
         let data = await response.json()
         if (response.ok) {
-          this.products = data.products
-          console.log(data.products)
+          this.products = []
+          for (let i = 0; i < data.products.length; i++) {
+            console.log(data.products[i])
+            this.products.push(data.products[i])
+            console.log('pushed')
+          }
         } else {
           console.log(data)
         }
