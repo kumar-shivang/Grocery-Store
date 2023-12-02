@@ -82,7 +82,6 @@ export default {
   width: 62%;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: flex-start;
   border: thin solid dimgray;
