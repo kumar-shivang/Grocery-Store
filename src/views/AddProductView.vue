@@ -1,12 +1,21 @@
 <script>
 import { useManagerStore } from '@/stores/managerStore'
+import { useBaseStore } from '@/stores/baseStore'
 import { ErrorMessage, Field, Form } from 'vee-validate'
 
 export default {
   name: 'AddProductView',
   setup() {
     const managerStore = useManagerStore()
-    return { managerStore }
+    const baseStore = useBaseStore()
+    return { managerStore, baseStore }
+  },
+  beforeMount() {
+    if (this.baseStore.checkLogin('manager')) {
+      this.managerStore.fetchCategories()
+    } else {
+      this.baseStore.$state.type = 'manager'
+    }
   },
   components: {
     Form,
@@ -182,10 +191,6 @@ export default {
       }
       this.$router.push('/manager')
     }
-  },
-  beforeMount() {
-    this.managerStore.fetchCategories()
-    console.log(this.managerStore.categories)
   }
 }
 </script>
@@ -322,7 +327,13 @@ export default {
           id="expiryDate"
         />
       </div>
-      <button type="submit" class="btn btn-primary">Create Product</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        :disabled="!imageUpload.done && !useDefaultImage"
+      >
+        Create Product
+      </button>
       <button type="reset" class="btn btn-outline-dark" @click="imageReset">
         Reset<i class="bi bi-arrow-clockwise" />
       </button>
