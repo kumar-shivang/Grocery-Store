@@ -82,6 +82,8 @@ footer {
   height: var(--footer-height);
   background-color: whitesmoke;
   width: var(--app-width);
+  position: fixed;
+  z-index: 9999;
 }
 a {
   text-decoration: none;
