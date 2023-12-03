@@ -7,21 +7,7 @@ export default {
     console.log('Setting up store in navbar component')
     return { store }
   },
-  data() {
-    return {
-      searchForm: {
-        query: '',
-        type: 'Product'
-      }
-    }
-  },
   methods: {
-    search() {
-      console.log(this.searchForm)
-    },
-    searchTypeChange(type) {
-      this.searchForm.type = type
-    },
     logout() {
       this.store.logout()
     }
@@ -53,37 +39,6 @@ export default {
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <form v-if="store.$state.type === 'user'" class="d-flex mx-auto" role="search">
-          <input
-            class="form-control"
-            type="search"
-            placeholder="Search product or category"
-            aria-label="Search"
-            spellcheck="false"
-            data-ms-editor="true"
-            v-model="searchForm.query"
-          />
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-success dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              {{ searchForm.type }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <div class="dropdown-item" @click="searchTypeChange('Product')">Product</div>
-              </li>
-              <li>
-                <div class="dropdown-item" @click="searchTypeChange('Category')">Category</div>
-              </li>
-            </ul>
-          </div>
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <router-link
@@ -132,8 +87,5 @@ img {
   height: 50px;
   width: 50px;
   margin-right: 10px;
-}
-form {
-  width: 50%;
 }
 </style>
