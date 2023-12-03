@@ -40,11 +40,7 @@ export default {
         let current_stock = product.current_stock
         let category = product.category
         let image = product.image
-        if (id && name && description && rate && unit && current_stock && category && image) {
-          return true
-        } else {
-          return false
-        }
+        return !!(id && name && description && rate && unit && current_stock && category && image)
       }
     }
   },
@@ -52,7 +48,6 @@ export default {
     toURL(string) {
       return 'http://localhost:5000/' + string
     },
-    async updateProduct() {},
     editProduct() {
       this.editing = true
       this.editingProduct.id = this.product.id
@@ -141,7 +136,7 @@ export default {
       }
       await this.managerStore.fetchProducts()
     },
-    async updateProductReq() {
+    async updateProduct() {
       const response = await fetch(
         `http://localhost:5000/api/manager/update_product/${this.editingProduct.id}`,
         {
@@ -185,7 +180,7 @@ export default {
         </ul>
       </div>
     </div>
-    <img class="card-img img" :src="toURL(product.image.image_path)" />
+    <img class="card-img img" :src="toURL(product.image.image_path)" alt="product image" />
     <div v-if="!editing && !addStock.id">
       <div class="card-body" v-if="!editing && !addStock.id">
         <h3 class="card-title">
@@ -213,10 +208,10 @@ export default {
             step="1"
           />
           ₹
-          <div class="d-flex flex-column">
+          <span class="d-flex flex-column">
             <i class="bi bi-check2-square text-success" @click="editRate"></i>
             <i class="bi bi-x-square text-danger" @click="updateRate.id = null"></i>
-          </div>
+          </span>
         </span>
         <span>per {{ product.unit }}</span>
       </div>
@@ -241,7 +236,7 @@ export default {
       </div>
 
       <div class="card-footer">
-        <button class="btn btn-success" @click="updateProductReq">Save</button>
+        <button class="btn btn-success" @click="updateProduct">Save</button>
         <button class="btn btn-danger" @click="cancelEdit">Cancel</button>
       </div>
     </div>
