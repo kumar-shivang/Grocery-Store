@@ -369,12 +369,6 @@ li {
   align-items: center;
   margin-top: 1rem;
 }
-.updateButtons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-}
 .updateRate {
   display: flex;
   flex-direction: row;
