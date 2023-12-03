@@ -108,9 +108,9 @@ export const useBaseStore = defineStore('base', {
         } else {
           console.log('token is invalid')
           this.logout()
+          this.type = type
           return false
         }
-        this.type = type
       } else {
         console.log('token does not exist')
         this.logout()
