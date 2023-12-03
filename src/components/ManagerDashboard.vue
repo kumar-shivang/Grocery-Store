@@ -85,7 +85,6 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
   border: thin solid dimgray;
-  overflow: auto;
 }
 #title {
   height: 10%;
@@ -101,6 +100,8 @@ export default {
   justify-content: start;
   align-items: center;
   width: 100%;
-  height: 30rem;
+  height: 100%;
+  overflow: auto;
+  scroll-behavior: smooth;
 }
 </style>
