@@ -108,5 +108,6 @@ export default {
 }
 #products {
   height: 90%;
+  scroll-behavior: smooth;
 }
 </style>
