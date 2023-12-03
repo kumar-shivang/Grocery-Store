@@ -83,26 +83,6 @@ export default {
   align-items: start;
   border: thin solid dimgray;
 }
-#top-left {
-  width: 100%;
-  height: 75%;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  border: thin solid dimgray;
-  padding: 1rem;
-}
-#bottom-left {
-  width: 100%;
-  height: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  border: thin solid dimgray;
-  padding: 1rem;
-}
 #top-right {
   width: 100%;
   height: 50%;

@@ -68,16 +68,4 @@ export default {
   background-color: red;
   color: white;
 }
-.delete {
-  cursor: pointer;
-  color: red;
-}
-.add {
-  cursor: pointer;
-  color: green;
-}
-.edit {
-  cursor: pointer;
-  color: blue;
-}
 </style>
