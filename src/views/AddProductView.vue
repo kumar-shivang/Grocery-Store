@@ -14,7 +14,9 @@ export default {
     if (this.baseStore.checkLogin('manager')) {
       this.managerStore.fetchCategories()
     } else {
+      this.baseStore.logout()
       this.baseStore.$state.type = 'manager'
+      this.$router.push('/')
     }
   },
   components: {
