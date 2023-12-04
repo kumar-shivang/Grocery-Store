@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     categoryRequests() {
-      return this.adminStore.categoryRequests
+      return this.adminStore.getCategoryRequests
     }
   }
 }

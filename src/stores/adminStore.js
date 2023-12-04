@@ -23,6 +23,9 @@ export const useAdminStore = defineStore({
   getters: {
     getAdmin() {
       return this.admin
+    },
+    getCategoryRequests() {
+      return this.categoryRequests
     }
   },
   actions: {
@@ -63,9 +66,13 @@ export const useAdminStore = defineStore({
         })
         if (response.ok) {
           const data = await response.json()
-          this.categoryRequests = data.category_requests // category_requests is a list of objects
+          this.categoryRequests = []
+          data.category_requests.forEach((categoryRequest) => {
+            this.categoryRequests.push(categoryRequest)
+          })
         } else if (response.status === 404) {
           this.noCategoryRequests = true
+          this.categoryRequests = []
           console.log(response.json())
         } else {
           console.log(response.json())
