@@ -313,13 +313,15 @@ export default {
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 .card {
   width: 15rem;
+  height: max-content;
   margin: 1rem;
   border: 1px solid black;
 }
 .card-img {
-  width: 100%;
-  height: 15rem;
+  width: 13rem;
+  height: 13rem;
   object-fit: cover;
+  margin: auto;
 }
 .rate {
   font-size: 1.5rem;
