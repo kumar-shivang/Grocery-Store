@@ -14,11 +14,9 @@ export default {
   },
   methods: {
     open_as_user() {
-      console.log('open as user')
       this.store.logout()
-      console.warn(this.store.$state.type)
+      this.store.$state.type = 'user'
       this.$router.push('/')
-      console.log('pushed')
     }
   },
   computed: {
