@@ -14,7 +14,19 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return this.store.$state.isLogged
+      return this.store.getIsLogged
+    },
+    type() {
+      return this.store.getType
+    },
+    home() {
+      if (this.type === 'admin') {
+        return '/admin'
+      } else if (this.type === 'manager') {
+        return '/manager'
+      } else {
+        return '/'
+      }
     }
   }
 }
@@ -23,45 +35,48 @@ export default {
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">
+      <a class="navbar-brand" :href="home">
         <img src="@/assets/logo.svg" alt="logo" />
         <span>Grocery Store</span>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link
-              to="/manager/add_product"
-              v-if="store.$state.type === 'manager' && this.$route.name !== 'add_product'"
-              class="nav-link active"
-            >
-              Add Product
-            </router-link>
-            <router-link
-              to="/manager"
-              v-else-if="store.$state.type === 'manager' && this.$route.name === 'add_product'"
-              class="nav-link active"
-            >
-              Dashboard
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="login" v-if="!isLoggedIn" class="nav-link active"> Login </router-link>
-            <div v-else class="nav-link active" @click="logout">Logout</div>
-          </li>
-        </ul>
-      </div>
+      <!--      <button-->
+      <!--        class="navbar-toggler"-->
+      <!--        type="button"-->
+      <!--        data-bs-toggle="collapse"-->
+      <!--        data-bs-target="#navbarSupportedContent"-->
+      <!--        aria-controls="navbarSupportedContent"-->
+      <!--        aria-expanded="false"-->
+      <!--        aria-label="Toggle navigation"-->
+      <!--      >-->
+      <!--        <span class="navbar-toggler-icon"></span>-->
+      <!--      </button>-->
+      <!--      <div class="collapse navbar-collapse" id="navbarSupportedContent">-->
+      <!--        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">-->
+      <!--          <li class="nav-item">-->
+      <!--            <router-link-->
+      <!--              to="/manager/add_product"-->
+      <!--              v-if="store.$state.type === 'manager' && this.$route.name !== 'add_product'"-->
+      <!--              class="nav-link active"-->
+      <!--            >-->
+      <!--              Add Product-->
+      <!--            </router-link>-->
+      <!--            <router-link-->
+      <!--              to="/manager"-->
+      <!--              v-else-if="store.$state.type === 'manager' && this.$route.name === 'add_product'"-->
+      <!--              class="nav-link active"-->
+      <!--            >-->
+      <!--              Dashboard-->
+      <!--            </router-link>-->
+      <!--          </li>-->
+      <!--          <li class="nav-item">-->
+      <!--            <router-link to="login" v-if="!isLoggedIn" class="nav-link active"> Login </router-link>-->
+      <!--            <div v-else class="nav-link active" @click="logout">Logout</div>-->
+      <!--          </li>-->
+      <!--        </ul>-->
+      <!--      </div>-->
+    </div>
+    <div v-if="isLoggedIn">
+      <div class="nav-link active" @click="logout">Logout</div>
     </div>
   </nav>
 </template>
@@ -87,5 +102,11 @@ img {
   height: 50px;
   width: 50px;
   margin-right: 10px;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
 }
 </style>
