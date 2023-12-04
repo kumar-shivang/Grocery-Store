@@ -2,6 +2,7 @@
 import { useBaseStore } from '@/stores/baseStore'
 import { useUserStore } from '@/stores/userStore'
 import productCard from '@/components/user components/ProductCard.vue'
+import sidebar from '@/components/user components/sidebar.vue'
 
 export default {
   name: 'HomeView',
@@ -17,10 +18,12 @@ export default {
       email: ''
     },
     searchQuery: '',
-    filterCategory: ''
+    filterCategory: '',
+    sort: null
   }),
   components: {
-    productCard
+    productCard,
+    sidebar
   },
   computed: {
     products() {
@@ -35,35 +38,47 @@ export default {
           return product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
         })
       }
+      if ([0, 1].includes(this.sort)) {
+        console.log('Sorting')
+        products = products.sort((a, b) => {
+          if (this.sort === 0) {
+            return a.rate - b.rate
+          } else {
+            return b.rate - a.rate
+          }
+        })
+      } else {
+        console.log('Not sorting')
+      }
       return products
     },
     categories() {
       return this.userStore.getCategories
+    },
+    access_token() {
+      return this.baseStore.getAccessToken
+    },
+    loggedIn() {
+      return this.baseStore.getIsLogged
+    },
+    type() {
+      return this.baseStore.getType
     }
   },
   methods: {},
   beforeMount() {
-    if (!this.baseStore.getAccessToken) {
-      this.user.id = null
-      this.user.username = 'Guest'
-      this.user.email = ''
-      this.userStore.fetchProducts()
-      this.userStore.fetchCategories()
-      this.baseStore.type = 'user'
-    } else {
-      if (this.baseStore.checkLogin('manager')) {
-        this.$router.push('/manager')
-      } else if (this.baseStore.checkLogin('admin')) {
-        this.$router.push('/admin')
-      } else if (this.baseStore.checkLogin('user')) {
-        let user = this.baseStore.getUser()
-        this.user.id = user.id
-        this.user.username = user.username
-        this.user.email = user.email
+    if (this.loggedIn) {
+      if (this.type === 'user') {
         this.userStore.fetchProducts()
         this.userStore.fetchCategories()
-      } else {
+      } else if (this.type === 'manager') {
+        this.$router.push('/manager')
+      } else if (this.type === 'admin') {
+        this.$router.push('/admin')
       }
+    } else {
+      this.userStore.fetchProducts()
+      this.userStore.fetchCategories()
     }
   }
 }
@@ -71,7 +86,9 @@ export default {
 
 <template>
   <div class="d-flex flex-row w-100 main">
-    <div class="d-flex flex-column overflow-auto w-25"></div>
+    <div class="d-flex flex-column overflow-auto w-25">
+      <sidebar />
+    </div>
     <div class="d-flex flex-column w-75">
       <div id="searchBar" class="d-flex flex-row justify-content-between mx-3">
         <input
@@ -81,12 +98,18 @@ export default {
           class="form-control"
           style="width: 50%; height: 80%"
         />
-        <select class="form-select" style="width: 20%" v-model="filterCategory">
-          <option selected disabled value="">Filter by</option>
+        <span>Filters</span>
+        <select class="form-select" style="width: 20%" v-model.number="filterCategory">
+          <option selected disabled value="">Category</option>
           <option value="">All</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.category_name }}
           </option>
+        </select>
+        <select class="form-select" v-model.number="sort" style="width: 20%">
+          <option selected disabled value="null">Price</option>
+          <option value="0">Low to High</option>
+          <option value="1">High to Low</option>
         </select>
       </div>
       <div id="products" class="d-flex flex-row overflow-auto flex-wrap">
