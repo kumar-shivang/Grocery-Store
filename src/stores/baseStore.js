@@ -62,9 +62,11 @@ export const useBaseStore = defineStore('base', {
     },
     getIsLogged(state) {
       return state.access_token !== ''
+    },
+    getType(state) {
+      return state.type
     }
   },
-
   actions: {
     async getUser() {
       const response = await fetch('http://localhost:5000/api/login/get_user', {
