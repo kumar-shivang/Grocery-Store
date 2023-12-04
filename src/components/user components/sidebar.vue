@@ -57,7 +57,7 @@ export default {
       <img id="brandLogo" src="@/assets/logo.svg" alt="logo" />
       <h2>Grocery Store</h2>
     </div>
-    <div class="d-flex flex-column align-items-center" v-if="loggedIn">
+    <div id="userDetails" class="d-flex flex-column align-items-center" v-if="loggedIn">
       <div class="d-flex flex-column align-items-center">
         <h3>{{ user.username }}</h3>
       </div>
@@ -65,12 +65,16 @@ export default {
         <h4>{{ user.email }}</h4>
       </div>
     </div>
-    <div id="buttons"></div>
+    <div id="cart"></div>
+    <div id="buttons" class="me-0">
+      <button v-if="!loggedIn" class="btn btn-primary" @click="this.$router.push('/login')">
+        Login
+      </button>
+      <button v-if="loggedIn" class="btn btn-primary" @click="this.baseStore.logout()">
+        Logout
+      </button>
+    </div>
   </div>
-  <button v-if="!loggedIn" class="btn btn-primary" @click="this.$router.push('/login')">
-    Login
-  </button>
-  <button v-if="loggedIn" class="btn btn-primary" @click="this.baseStore.logout()">Logout</button>
 </template>
 
 <style scoped>
@@ -81,5 +85,26 @@ img {
 #brand {
   height: 25%;
   margin: 3rem;
+}
+#brandLogo {
+  width: 10rem;
+  height: 10rem;
+}
+#cart {
+  height: 70vh;
+  border: red 1px groove;
+  background-color: lime;
+}
+#buttons {
+  height: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.btn {
+  width: 100%;
+}
+#userDetails {
+  height: 25%;
 }
 </style>
