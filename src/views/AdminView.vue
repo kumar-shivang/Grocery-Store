@@ -1,5 +1,4 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
 import LoginForm from '@/components/user components/LoginForm.vue'
 import AdminDashboard from '@/components/admin dashboard components/AdminDashboard.vue'
 import { useBaseStore } from '@/stores/baseStore'
@@ -12,15 +11,10 @@ export default {
     return { baseStore, adminStore }
   },
   components: {
-    RouterLink,
-    RouterView,
     LoginForm,
     AdminDashboard
   },
-  data: () => ({
-    baseStore: useBaseStore(),
-    adminStore: useAdminStore()
-  }),
+  data: () => ({}),
   beforeMount() {
     if (this.baseStore.checkLogin('admin')) {
       this.adminStore.fetchCategoryRequests()
