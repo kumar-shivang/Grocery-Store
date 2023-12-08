@@ -29,7 +29,7 @@ export default {
     products() {
       let prod = this.managerStore.getProducts
       if (prod.length === 0) {
-        this.noProducts = true
+        return []
       }
       return prod
     },
@@ -56,11 +56,11 @@ export default {
         </div>
       </div>
       <div id="right">
-        <div v-if="noProducts">
+        <div v-if="!products">
           <h3>No products</h3>
         </div>
         <div v-else class="cards">
-          <div v-for="product in products">
+          <div v-for="product in products" :key="product.id">
             <product-card :product="product" />
           </div>
         </div>
