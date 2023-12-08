@@ -1,7 +1,6 @@
 <script>
 import { useUserStore } from '@/stores/userStore'
 import { useBaseStore } from '@/stores/baseStore'
-import { Modal } from 'bootstrap'
 
 export default {
   name: 'order',
