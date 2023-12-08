@@ -81,6 +81,24 @@ export default {
       } else {
         this.baseStore.showNotification(data.message, 'danger')
       }
+    },
+    async cancel() {
+      const response = await fetch('http://localhost:5000/api/order/cancel_order/' + this.id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.access_token
+        }
+      })
+      const data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification('Order cancelled successfully', 'success')
+        await this.userStore.fetchUnconfirmedOrders()
+        await this.userStore.fetchConfirmedOrders()
+        await this.userStore.fetchProducts()
+      } else {
+        this.baseStore.showNotification(data.message, 'danger')
+      }
     }
   }
 }
@@ -101,7 +119,7 @@ export default {
       ></button>
     </td>
     <td>
-      <i class="bi bi-x-square"></i>
+      <i class="bi bi-x-square" @click="cancel"></i>
     </td>
   </tr>
 
