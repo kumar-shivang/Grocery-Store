@@ -71,9 +71,6 @@ export default {
           return this.productExpiryDate(product) >= this.expiryDate
         })
       }
-      if (this.expire.number) {
-        let expiry_date = this.expiryDate
-      }
       return products
     },
     categories() {
