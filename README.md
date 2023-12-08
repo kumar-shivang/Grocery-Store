@@ -1,6 +1,6 @@
 # Grocery Store
 This is a simple grocery app. It uses [Grocery Store API](https://www.github.com/kumar-shivang/Grocery-Store-API) in the backend.
-It is created using [VueJS](https://vuejs.org/) and [Vuetify](https://vuetifyjs.com/).
+It is created using [VueJS](https://vuejs.org/) and [Bootstrap5](https://getbootstrap.com/).
 It also has PWA support.
 
 ## Features
@@ -11,13 +11,13 @@ It also has PWA support.
 - [x] User can view order history.
 
 ### Admin Features
-- [x] Admin can approve manager requests.
-- [x] Admin can add, update and delete item categories.
+- [x] Admin can approve manager signup requests.
+- [x] Admin can add, update and delete categories.
+- [x] Admin can approve requests for adding, updating and deleting categories.
 
 ### Manager Features
-- [x] Manager can add, update and delete items.
+- [x] Manager can add, update and delete products.
 - [x] Manager can request admin for adding, updating and deleting item categories.
-- [x] Manager can view their dashboard.
 
 ## Project Setup
 ### Clone the repository
@@ -48,4 +48,13 @@ vite build
 ```sh
 vite
 ```
+
+This will start a development server at `localhost:8000`. You can change the port by using `--port` flag.
+
+or you can use the shell script `run dev server.sh` to start the development server.
+
+```sh
+./run dev server.sh
+```
+
 
