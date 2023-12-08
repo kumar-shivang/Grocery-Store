@@ -44,6 +44,11 @@ export default {
       }
     }
   },
+  computed: {
+    outOfStock() {
+      return this.product.current_stock === 0
+    }
+  },
   methods: {
     toURL(string) {
       return 'http://localhost:5000/' + string
@@ -165,7 +170,7 @@ export default {
 </script>
 
 <template>
-  <div class="card">
+  <div class="card shadow-sm" :class="{ 'bg-danger-subtle': outOfStock }">
     <div class="card-header">
       {{ product.category.category_name }}
       <div class="dropstart" v-if="!editing && !addStock.id">
@@ -189,7 +194,6 @@ export default {
         <div class="card-text">
           {{ product.description }}
         </div>
-        <br />
         <div class="card-subtitle text-danger">Expiry Date {{ product.expiry_date }}</div>
 
         <hr />
@@ -313,9 +317,8 @@ export default {
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 .card {
   width: 15rem;
-  height: max-content;
+  height: 35rem;
   margin: 1rem;
-  border: 1px solid black;
 }
 .card-img {
   width: 13rem;

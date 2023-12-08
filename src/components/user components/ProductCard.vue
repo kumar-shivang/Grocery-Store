@@ -25,6 +25,9 @@ export default {
     },
     loggedIn() {
       return this.baseStore.getIsLogged
+    },
+    outOfStock() {
+      return this.product.current_stock === 0
     }
   },
   methods: {
@@ -56,6 +59,8 @@ export default {
         } else {
           this.baseStore.showNotification(data.message, 'danger')
         }
+        await this.userStore.fetchUnconfirmedOrders()
+        await this.userStore.fetchConfirmedOrders()
       }
     }
   }
@@ -63,14 +68,18 @@ export default {
 </script>
 
 <template>
-  <div class="card">
+  <div class="card shadow-sm" :class="{ 'bg-danger-subtle': outOfStock }">
+    <div class="card-header bg-cream d-flex flex-row justify-content-between">
+      {{ product.category.category_name }}
+      <div v-if="!outOfStock" class="card-header-pills">
+        Stock Left: {{ product.current_stock }} {{ product.unit }}
+      </div>
+      <div v-else class="card-header-pills text-danger">Out of Stock</div>
+    </div>
+    <div class="card-img-top">
+      <img :src="toURL(product.image.image_path)" alt="product image" />
+    </div>
     <div class="card-body">
-      <div class="card-header">
-        {{ product.category.category_name }}
-      </div>
-      <div class="card-img">
-        <img :src="toURL(product.image.image_path)" alt="product image" />
-      </div>
       <div class="card-title">
         <h3>{{ product.name }}</h3>
       </div>
@@ -82,27 +91,22 @@ export default {
         <h4 class="d-inline-block">Rs</h4>
         Per {{ product.unit }}
       </div>
-      <div id="stock">
-        <h4 class="d-inline-block me-2">Stock:</h4>
-        <h4 class="d-inline-block">{{ product.current_stock }} {{ product.unit }}</h4>
+      {{ product.expiry_date }}
+    </div>
+    <div class="card-footer d-flex flex-row bg-cream">
+      <div id="adjust" class="w-75 d-flex flex-row justify-content-between align-content-center">
+        <i
+          class="bi bi-plus"
+          @click="quantity = quantity < product.current_stock ? quantity + 1 : quantity"
+        ></i>
+        <span id="quantity-unit" class="d-inline-block">
+          <span id="quantity">{{ quantity }}</span
+          ><span id="unit">{{ product.unit }}</span>
+        </span>
+        <i class="bi bi-dash" @click="quantity = quantity > 1 ? quantity - 1 : quantity"></i>
       </div>
-      <div class="card-footer">
-        <div id="adjust">
-          <i
-            class="bi bi-plus"
-            @click="quantity = quantity < product.current_stock ? quantity + 1 : quantity"
-          ></i>
-          <span id="quantity-unit" class="d-inline-block">
-            <span id="quantity">{{ quantity }}</span
-            ><span id="unit">{{ product.unit }}</span>
-          </span>
-          <i class="bi bi-dash" @click="quantity = quantity > 1 ? quantity - 1 : quantity"></i>
-        </div>
 
-        <button id="addToCart" class="btn btn-success">
-          Buy <i class="bi bi-cart" @click="toCart" />
-        </button>
-      </div>
+      <i class="bi bi-cart" @click="toCart" />
     </div>
   </div>
 </template>
@@ -110,12 +114,11 @@ export default {
 <style scoped>
 .card {
   width: 15rem;
-  height: max-content;
+  height: 32rem;
   margin: 1rem;
-  border: 1px solid black;
 }
 img {
-  width: 12rem;
+  width: 100%;
   height: 12rem;
 }
 .card-footer {
@@ -123,7 +126,6 @@ img {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
 }
 #quantity {
   margin: 0;
@@ -160,5 +162,22 @@ img {
   justify-content: space-around;
   align-items: center;
   width: 70%;
+}
+.bi-cart {
+  font-size: 2rem;
+  color: green;
+}
+.bi-cart:hover {
+  color: white;
+  background-color: green;
+}
+.card-title {
+  text-transform: capitalize;
+}
+.card-header {
+  text-transform: capitalize;
+}
+.bg-cream {
+  background-color: mintcream;
 }
 </style>
