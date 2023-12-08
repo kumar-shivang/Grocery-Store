@@ -2,11 +2,13 @@
 import Navbar from '@/components/Navbar.vue'
 import Notification from '@/components/Notification.vue'
 import { useBaseStore } from '@/stores/baseStore'
+import { useUserStore } from '@/stores/userStore'
 export default {
   name: 'App',
   setup() {
     const store = useBaseStore()
-    return { store }
+    const userStore = useUserStore()
+    return { store, userStore }
   },
   components: {
     Navbar,
@@ -16,6 +18,7 @@ export default {
     open_as_user() {
       this.store.logout()
       this.store.$state.type = 'user'
+      this.userStore.$reset()
       this.$router.push('/')
     }
   },
@@ -40,7 +43,7 @@ export default {
   <main class="d-flex flex-row justify-content-center align-items-center">
     <router-view />
   </main>
-  <footer class="d-flex flex-row align-items-center justify-content-center">
+  <footer class="d-flex flex-row align-items-center justify-content-center shadow-lg">
     <span>
       Open as
       <button
@@ -78,14 +81,12 @@ router-view {
 }
 footer {
   height: var(--footer-height);
-  background-color: whitesmoke;
   width: var(--app-width);
   position: fixed;
   z-index: 9999;
 }
 a {
   text-decoration: none;
-  color: black;
   margin: auto;
 }
 footer button:hover {
