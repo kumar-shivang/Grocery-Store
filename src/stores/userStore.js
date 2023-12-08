@@ -109,7 +109,7 @@ export const useUserStore = defineStore('user', {
       if (response.ok) {
         this.confirmed = []
         data.orders.forEach((order) => {
-          this.unconfirmed.push(order)
+          this.confirmed.push(order)
         })
       } else {
         console.log(data)
