@@ -25,11 +25,6 @@ export const router = createRouter({
       path: '/manager',
       name: 'manager',
       component: () => import('@/views/ManagerView.vue')
-    },
-    {
-      path: '/manager/add_product',
-      name: 'add_product',
-      component: () => import('@/views/AddProductView.vue')
     }
   ]
 })
