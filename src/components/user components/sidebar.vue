@@ -37,6 +37,9 @@ export default {
     },
     totalOrderValue() {
       return this.userStore.getTotalOrderValue
+    },
+    noOfOrders() {
+      return this.unconfirmed.length
     }
   },
   methods: {
@@ -59,7 +62,7 @@ export default {
     },
     async confirmAll() {
       const response = await fetch('http://localhost:5000/api/order/confirm_all', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + this.access_token
@@ -70,6 +73,24 @@ export default {
         this.baseStore.showNotification('All orders confirmed successfully', 'success')
         await this.userStore.fetchUnconfirmedOrders()
         await this.userStore.fetchConfirmedOrders()
+      } else {
+        this.baseStore.showNotification(data.message, 'danger')
+      }
+    },
+    async cancelAll() {
+      const response = await fetch('http://localhost:5000/api/order/cancel_all', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + this.access_token
+        }
+      })
+      const data = await response.json()
+      if (response.ok) {
+        this.baseStore.showNotification('All orders cancelled successfully', 'success')
+        await this.userStore.fetchUnconfirmedOrders()
+        await this.userStore.fetchConfirmedOrders()
+        await this.userStore.fetchProducts()
       } else {
         this.baseStore.showNotification(data.message, 'danger')
       }
@@ -87,7 +108,7 @@ export default {
 
 <template>
   <div id="sidebar" class="d-flex flex-column justify-content-around">
-    <div id="sidebarMain" class="d-flex flex-column justify-content-between">
+    <div id="sidebarMain" class="d-flex flex-column justify-content-around mb-1">
       <div id="brand" class="d-flex flex-column justify-content-center align-items-center h-25">
         <img id="brandLogo" src="@/assets/logo.svg" alt="logo" />
         <h2>Grocery Store</h2>
@@ -119,8 +140,17 @@ export default {
           class="btn btn-success w-100"
           data-bs-toggle="modal"
           data-bs-target="#confirmAllModal"
+          :disabled="noOfOrders === 0"
         >
           Confirm All
+        </button>
+        <button
+          :disabled="noOfOrders === 0"
+          class="btn btn-danger w-100"
+          data-bs-target="#cancelAllModal"
+          data-bs-toggle="modal"
+        >
+          Cancel All
         </button>
       </div>
     </div>
@@ -133,6 +163,7 @@ export default {
       </button>
     </div>
   </div>
+  <!--  confirmation modal-->
   <div id="confirmAllModal" class="modal fade">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -151,6 +182,24 @@ export default {
       </div>
     </div>
   </div>
+  <!--  cancellation modal-->
+  <div id="cancelAllModal" class="modal fade">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-cream">
+          <h3 class="modal-title">Cancel All</h3>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <h4>Are you sure you want to cancel all orders?</h4>
+        </div>
+        <div class="modal-footer bg-cream">
+          <button class="btn btn-success" data-bs-dismiss="modal" @click="cancelAll">Yes</button>
+          <button class="btn btn-danger" data-bs-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -163,10 +212,10 @@ img {
 }
 
 #sidebarMain {
-  height: 95%;
+  height: 93%;
 }
 #cart {
-  height: 50%;
+  height: 40%;
 }
 #cartWithoutButton {
   height: 90%;
