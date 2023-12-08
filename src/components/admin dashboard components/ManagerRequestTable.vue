@@ -26,7 +26,7 @@ export default {
       <th><strong>Approve</strong></th>
       <th><strong>Reject</strong></th>
     </tr>
-    <tr v-for="mr in managerRequests">
+    <tr v-for="mr in managerRequests" :key="mr.id">
       <td>{{ mr.id }}</td>
       <td>{{ mr.username }}</td>
       <td>{{ mr.email }}</td>

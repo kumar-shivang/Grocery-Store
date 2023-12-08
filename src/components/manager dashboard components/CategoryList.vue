@@ -119,7 +119,7 @@ export default {
       <th><strong>Delete</strong></th>
       <th><strong>Edit</strong></th>
     </tr>
-    <tr v-for="category in categories">
+    <tr v-for="category in categories" :key="category.id">
       <td>{{ category.id }}</td>
       <td class="name" v-if="category.id !== editRequest.category_id">
         {{ category.category_name }}
