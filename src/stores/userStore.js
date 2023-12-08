@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useBaseStore } from '@/stores/baseStore'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -9,7 +10,9 @@ export const useUserStore = defineStore('user', {
         email: ''
       },
       products: [],
-      categories: []
+      categories: [],
+      unconfirmed: [],
+      confirmed: []
     }
   },
   getters: {
@@ -18,6 +21,27 @@ export const useUserStore = defineStore('user', {
     },
     getCategories() {
       return this.categories
+    },
+    getAccessToken() {
+      let store = useBaseStore()
+      return store.getAccessToken
+    },
+    getIsLogged() {
+      let store = useBaseStore()
+      return store.getIsLogged
+    },
+    getConfirmed() {
+      return this.confirmed
+    },
+    getUnconfirmed() {
+      return this.unconfirmed
+    },
+    getTotalOrderValue() {
+      let total = 0
+      this.unconfirmed.forEach((order) => {
+        total += order.value
+      })
+      return total
     }
   },
   actions: {
@@ -51,6 +75,45 @@ export const useUserStore = defineStore('user', {
       } else {
         console.log(data)
         this.categories = []
+      }
+    },
+    async fetchUnconfirmedOrders() {
+      const response = await fetch('http://localhost:5000/api/order/unconfirmed', {
+        headers: {
+          Authorization: `Bearer ${this.getAccessToken}`
+        },
+        method: 'GET',
+        mode: 'cors'
+      })
+      const data = await response.json()
+      console.log(data)
+      if (response.ok) {
+        this.unconfirmed = []
+        data.orders.forEach((order) => {
+          this.unconfirmed.push(order)
+        })
+      } else {
+        console.log(data)
+        this.unconfirmed = []
+      }
+    },
+    async fetchConfirmedOrders() {
+      const response = await fetch('http://localhost:5000/api/order/confirmed', {
+        headers: {
+          Authorization: `Bearer ${this.getAccessToken}`
+        },
+        method: 'GET',
+        mode: 'cors'
+      })
+      const data = await response.json()
+      if (response.ok) {
+        this.confirmed = []
+        data.orders.forEach((order) => {
+          this.unconfirmed.push(order)
+        })
+      } else {
+        console.log(data)
+        this.confirmed = []
       }
     }
   }
