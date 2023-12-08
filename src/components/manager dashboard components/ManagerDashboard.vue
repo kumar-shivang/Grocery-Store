@@ -3,6 +3,7 @@ import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
 import productCard from '@/components/manager dashboard components/productCard.vue'
 import categoryList from '@/components/manager dashboard components/CategoryList.vue'
+import addProductForm from '@/components/manager dashboard components/addProductForm.vue'
 export default {
   name: 'ManagerDashboard',
   setup() {
@@ -18,7 +19,8 @@ export default {
   },
   components: {
     productCard,
-    categoryList
+    categoryList,
+    addProductForm
   },
   beforeMount() {
     this.managerStore.fetchProducts()
@@ -40,14 +42,17 @@ export default {
 
 <template>
   <div id="dashboard">
-    <div id="title" class="w-100 d-flex flex-row">
+    <div id="title" class="w-100 d-flex flex-row shadow-sm">
       <h2 class="mx-auto">Manager Dashboard</h2>
     </div>
     <div id="container" class="d-flex flex-row m-0 w-100">
-      <div id="left">
-        <div>
-          <h3>Categories</h3>
+      <div id="left" class="d-flex flex-column shadow">
+        <div id="top-left" class="d-flex flex-column overflow-y-scroll overflow-x-hidden">
+          <h3 class="mx-auto">Categories</h3>
           <categoryList />
+        </div>
+        <div id="bottom-left " class="overflow-y-auto">
+          <addProductForm />
         </div>
       </div>
       <div id="right">
@@ -75,20 +80,14 @@ export default {
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  border: thin solid dimgray;
-  overflow: auto;
 }
 #right {
   width: 62%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  border: thin solid dimgray;
 }
 #title {
   height: 10%;
-  border: thin solid dimgray;
+  justify-content: center;
+  align-items: center;
 }
 #container {
   height: 90%;
@@ -98,10 +97,17 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
-  align-items: center;
+  align-items: start;
   width: 100%;
   height: 100%;
   overflow: auto;
   scroll-behavior: smooth;
+}
+#top-left {
+  height: 50%;
+}
+#bottom-left {
+  height: 50%;
+  width: 100%;
 }
 </style>

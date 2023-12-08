@@ -4,20 +4,11 @@ import { useBaseStore } from '@/stores/baseStore'
 import { ErrorMessage, Field, Form } from 'vee-validate'
 
 export default {
-  name: 'AddProductView',
+  name: 'AddProductForm',
   setup() {
     const managerStore = useManagerStore()
     const baseStore = useBaseStore()
     return { managerStore, baseStore }
-  },
-  beforeMount() {
-    if (this.baseStore.checkLogin('manager')) {
-      this.managerStore.fetchCategories()
-    } else {
-      this.baseStore.logout()
-      this.baseStore.$state.type = 'manager'
-      this.$router.push('/')
-    }
   },
   components: {
     Form,
@@ -352,7 +343,7 @@ export default {
 
 <style scoped>
 .form {
-  width: 55%;
+  width: 100%;
   margin: 0 auto;
   border: thin solid dimgray;
   padding: 2rem;
