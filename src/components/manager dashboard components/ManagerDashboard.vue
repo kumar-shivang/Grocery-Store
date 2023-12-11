@@ -1,9 +1,9 @@
 <script>
 import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
-import productCard from '@/components/manager dashboard components/productCard.vue'
+import productCard from '@/components/manager dashboard components/ProductCard.vue'
 import categoryList from '@/components/manager dashboard components/CategoryList.vue'
-import addProductForm from '@/components/manager dashboard components/addProductForm.vue'
+import addProductForm from '@/components/manager dashboard components/AddProductForm.vue'
 export default {
   name: 'ManagerDashboard',
   setup() {
