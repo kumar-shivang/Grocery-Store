@@ -1,7 +1,7 @@
 <script>
 import { useUserStore } from '@/stores/userStore'
 import { useBaseStore } from '@/stores/baseStore'
-import order from '@/components/user components/order.vue'
+import order from '@/components/user components/Order.vue'
 
 export default {
   name: 'sidebar',

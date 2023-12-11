@@ -2,7 +2,7 @@
 import { useBaseStore } from '@/stores/baseStore'
 import { useUserStore } from '@/stores/userStore'
 import productCard from '@/components/user components/ProductCard.vue'
-import sidebar from '@/components/user components/sidebar.vue'
+import sidebar from '@/components/user components/Sidebar.vue'
 
 export default {
   name: 'HomeView',
