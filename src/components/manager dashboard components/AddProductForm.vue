@@ -24,9 +24,6 @@ export default {
       product_category: '',
       product_unit: '',
       expiry_date: new Date(),
-
-      response_ok: false,
-      response_message: '',
       useDefaultImage: false,
       imageUpload: {
         previewImage: null,
@@ -47,17 +44,6 @@ export default {
   },
   methods: {
     async createProduct() {
-      console.log('Creating product')
-      console.log({
-        name: this.product_name,
-        rate: this.product_rate,
-        unit: this.product_unit,
-        description: this.product_description,
-        category_id: this.product_category,
-        image_id: this.image.id,
-        expiry_date: this.expiry_date,
-        current_stock: this.product_stock
-      })
       const response = await fetch('http://localhost:5000/api/manager/create_product', {
         method: 'POST',
         headers: {
@@ -76,13 +62,11 @@ export default {
         })
       })
       let data = await response.json()
-      console.log(data)
       if (response.ok) {
-        this.response_ok = true
-        this.response_message = data.message
+        this.baseStore.showNotification(data.message, 'success')
+        await this.managerStore.fetchProducts()
       } else {
-        this.response_ok = false
-        this.response_message = data.message
+        this.baseStore.showNotification(data.message, 'danger')
       }
     },
     validateProductName(product_name) {
@@ -177,12 +161,6 @@ export default {
         this.imageUpload.alert = ''
       }
       this.useDefaultImage = false
-    },
-    async cancel() {
-      if (this.imageUpload.done) {
-        await this.deleteImage()
-      }
-      this.$router.push('/manager')
     }
   }
 }
@@ -330,14 +308,7 @@ export default {
       <button type="reset" class="btn btn-outline-dark" @click="imageReset">
         Reset<i class="bi bi-arrow-clockwise" />
       </button>
-      <button class="btn btn-danger" @click="cancel">Cancel<i class="bi bi-x" /></button>
     </Form>
-    <div v-if="response_ok" class="alert alert-success" role="alert">
-      {{ response_message }}
-    </div>
-    <div v-else-if="!response_ok && response_message" class="alert alert-danger" role="alert">
-      {{ response_message }}
-    </div>
   </div>
 </template>
 
