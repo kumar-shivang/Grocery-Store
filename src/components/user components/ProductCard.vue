@@ -69,7 +69,7 @@ export default {
 
 <template>
   <div class="card shadow-sm" :class="{ 'bg-danger-subtle': outOfStock }">
-    <div class="card-header bg-cream d-flex flex-row justify-content-between">
+    <div class="card-header bg-cream">
       {{ product.category.category_name }}
       <div v-if="!outOfStock" class="card-header-pills">
         Stock Left: {{ product.current_stock }} {{ product.unit }}
