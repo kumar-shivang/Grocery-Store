@@ -38,7 +38,7 @@ export default {
         } else if (this.expire.unit === 'weeks') {
           date.setDate(date.getDate() + this.expire.number * 7)
         } else if (this.expire.unit === 'months') {
-          date.setMonth(date.getMonth() + this.expire.number)
+          date.setMonth(date.getDate() + this.expire.number / 2)
         }
         return date
       } else {
@@ -68,7 +68,7 @@ export default {
       }
       if (this.expire.number) {
         products = products.filter((product) => {
-          return this.productExpiryDate(product) >= this.expiryDate
+          return this.productExpiryDate(product) > this.expiryDate
         })
       }
       return products
@@ -102,7 +102,6 @@ export default {
       //dateParts[1] is month
       //dateParts[2] is day
       let dateObject = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2])
-      console.log(dateObject)
       return dateObject
     }
   },
@@ -155,7 +154,7 @@ export default {
               <option value="1">High to Low</option>
             </select>
             <div id="expiryDate" class="d-flex flex-row input-group w-50">
-              <label for="expiryDate" class="input-group-text">Expiry Date within</label>
+              <label for="expiryDate" class="input-group-text">Expiry Date after</label>
               <input
                 type="number"
                 v-model.number="expire.number"
