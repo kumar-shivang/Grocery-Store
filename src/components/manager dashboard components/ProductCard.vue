@@ -164,6 +164,67 @@ export default {
         this.store.showNotification(data.message, 'danger')
       }
       this.cancelEdit()
+    },
+    async triggerExport() {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/manager/export_product/${this.product.id}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + this.store.access_token
+          }
+        }
+      )
+      let data = await response.json()
+      if (response.ok) {
+        this.store.showNotification('Processing the task', 'success')
+        return data.taskID
+      } else {
+        this.store.showNotification('Something went wrong', 'danger')
+        return null
+      }
+    },
+    async getTaskStatus(taskID) {
+      if (taskID) {
+        const response = await fetch(`http://127.0.0.1:5000/api/manager/task_status/${taskID}`, {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + this.store.access_token
+          }
+        })
+        let data = await response.json()
+        if (response.ok) {
+          return data.status
+        } else {
+          this.store.showNotification('Something went wrong while downloading CSV', 'danger')
+          return 'FAILURE'
+        }
+      } else {
+        this.store.showNotification('Something went wrong while downloading CSV', 'danger')
+        return null
+      }
+    },
+    async requestCSV() {
+      let taskID = await this.triggerExport()
+      if (taskID) {
+        setTimeout(() => {
+          let interval = setInterval(async () => {
+            let status = await this.getTaskStatus(taskID)
+            console.log(status)
+            if (status === 'SUCCESS') {
+              this.store.showNotification('Downloaded CSV', 'success')
+              let a = document.createElement('a')
+              a.href = `http://127.0.0.1:5000/static/products/${this.product.id}.csv`
+              a.click()
+              clearInterval(interval)
+            } else if (status === 'FAILURE') {
+              clearInterval(interval)
+              this.store.showNotification('Something went wrong while downloading CSV', 'danger')
+            }
+          }, 1000)
+        }, 5000)
+        console.log(taskID)
+      }
     }
   }
 }
@@ -182,6 +243,7 @@ export default {
           <li data-bs-toggle="modal" data-bs-target="#productDeleteModal">
             <p class="dropdown-item text-danger">Delete</p>
           </li>
+          <li class="dropdown-item" @click="requestCSV">Export as CSV</li>
         </ul>
       </div>
     </div>
