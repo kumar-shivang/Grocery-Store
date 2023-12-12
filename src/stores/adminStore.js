@@ -115,10 +115,11 @@ export const useAdminStore = defineStore({
           }
         )
         if (response.ok) {
-          console.log('manager request approved')
+          store.showNotification('Manager request approved', 'success')
           await this.fetchManagerRequests()
         } else {
           console.log(response.json())
+          store.showNotification('Something went wrong', 'danger')
         }
       } else {
         console.log('no token')
@@ -137,9 +138,10 @@ export const useAdminStore = defineStore({
           }
         )
         if (response.ok) {
-          console.log('manager request rejected')
+          store.showNotification('Manager request rejected', 'success')
           await this.fetchManagerRequests()
         } else {
+          store.showNotification('Something went wrong', 'danger')
           console.log(response.json())
         }
       } else {
