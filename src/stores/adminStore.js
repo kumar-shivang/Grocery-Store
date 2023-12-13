@@ -49,10 +49,7 @@ export const useAdminStore = defineStore({
           this.managerRequests = data.manager_requests // manager_requests is a list of objects
         } else if (response.status === 404) {
           this.noManagerRequests = true
-          console.log(response.json())
         }
-      } else {
-        console.log('no token')
       }
     },
     async fetchCategoryRequests() {
@@ -73,36 +70,22 @@ export const useAdminStore = defineStore({
         } else if (response.status === 404) {
           this.noCategoryRequests = true
           this.categoryRequests = []
-          console.log(response.json())
-        } else {
-          console.log(response.json())
         }
-      } else {
-        console.log('no token')
       }
     },
     async fetchCategories() {
       if (this.access_token) {
         const response = await fetch('http://localhost:5000/api/user/get_categories', {
-          headers: {
-            // Authorization: `Bearer ${this.access_token}`
-          },
-
           method: 'GET',
           mode: 'cors'
         })
         if (response.ok) {
           const data = await response.json()
           this.categories = data.categories // categories is a list of objects
-        } else {
-          console.log(response.json())
         }
-      } else {
-        console.log('no token')
       }
     },
     async approveManagerRequest(managerId) {
-      console.log('managerId', managerId)
       if (this.access_token) {
         const response = await fetch(
           `http://localhost:5000/api/admin/approve_manager_request/${managerId}`,
@@ -118,11 +101,8 @@ export const useAdminStore = defineStore({
           store.showNotification('Manager request approved', 'success')
           await this.fetchManagerRequests()
         } else {
-          console.log(response.json())
           store.showNotification('Something went wrong', 'danger')
         }
-      } else {
-        console.log('no token')
       }
     },
     async rejectManagerRequest(managerId) {
@@ -142,10 +122,7 @@ export const useAdminStore = defineStore({
           await this.fetchManagerRequests()
         } else {
           store.showNotification('Something went wrong', 'danger')
-          console.log(response.json())
         }
-      } else {
-        console.log('no token')
       }
     },
     async approveCategoryRequest(categoryId, type) {
@@ -225,8 +202,6 @@ export const useAdminStore = defineStore({
           this.store.showNotification('Something went wrong', 'danger')
           await this.fetchCategoryRequests()
         }
-      } else {
-        console.log('no token')
       }
       await this.fetchCategoryRequests()
     }
