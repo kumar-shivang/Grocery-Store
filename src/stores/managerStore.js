@@ -39,16 +39,11 @@ export const useManagerStore = defineStore({
         if (response.ok) {
           this.products = []
           for (let i = 0; i < data.products.length; i++) {
-            console.log(data.products[i])
             this.products.push(data.products[i])
-            console.log('pushed')
           }
         } else {
           this.products = []
-          console.log(data)
         }
-      } else {
-        console.log('no token')
       }
     },
     async fetchCategories() {
@@ -60,12 +55,7 @@ export const useManagerStore = defineStore({
         let data = await response.json()
         if (response.ok) {
           this.categories = data.categories
-          console.log(data.categories)
-        } else {
-          console.log(response)
-        }
-      } else {
-        console.log('no token')
+        } 
       }
     }
   }
