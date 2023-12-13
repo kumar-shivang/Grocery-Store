@@ -14,15 +14,12 @@ function getCookie() {
       .split('; ')
       .find((row) => row.startsWith('login_type'))
       .split('=')[1]
-    console.log(access_token, type)
     return [access_token, type]
   } else {
-    console.log('cookie does not exist')
     return ['', 'user']
   }
 }
 function setCookie(token, type) {
-  console.log('setting cookie')
   let expires = new Date()
   expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000)
   document.cookie = `access_token=${token}; path=/; expires=${expires.toUTCString()}`
@@ -84,7 +81,6 @@ export const useBaseStore = defineStore('base', {
           email: data.email
         }
       } else {
-        console.log(data)
         return {
           id: '',
           username: '',
@@ -103,25 +99,21 @@ export const useBaseStore = defineStore('base', {
           mode: 'cors'
         })
         if (response.ok) {
-          console.log('token is valid')
           this.isLogged = true
           this.user = await this.getUser()
           return true
         } else {
-          console.log('token is invalid')
           this.logout()
           this.type = type
           return false
         }
       } else {
-        console.log('token does not exist')
         this.logout()
         this.type = type
         return false
       }
     },
     logout() {
-      console.log('logging out')
       deleteCookie()
       this.access_token = ''
       this.user = {
@@ -131,7 +123,6 @@ export const useBaseStore = defineStore('base', {
       }
       this.isLogged = false
       this.type = 'user'
-      console.log('logged out')
     },
     setAccessToken(state, token, type) {
       this.access_token = token
