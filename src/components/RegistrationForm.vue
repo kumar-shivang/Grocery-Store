@@ -67,8 +67,6 @@ export default {
       }
     },
     async userRegistration() {
-      console.log(JSON.stringify(this.form))
-      try {
         const response = await fetch('http://127.0.0.1:5000/api/user/', {
           method: 'POST',
           headers: {
@@ -88,23 +86,15 @@ export default {
           this.message = 'User created successfully'
         } else {
           let data = await response.json()
-          data = data.message
-          console.log(data)
           let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
-          console.log(matches)
           for (let i = 0; i < matches.length; i++) {
             if (i % 2 !== 0) {
               this.message += matches[i].toLowerCase() + ','
             }
           }
         }
-      } catch (error) {
-        console.log(error)
-      }
     },
     async managerRegistration() {
-      console.log(JSON.stringify(this.form))
-      try {
         const response = await fetch('http://127.0.0.1:5000/api/manager/create_manager_request', {
           method: 'POST',
           headers: {
@@ -123,18 +113,13 @@ export default {
         } else {
           let data = await response.json()
           data = data.message
-          console.log(data)
           let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
-          console.log(matches)
           for (let i = 0; i < matches.length; i++) {
             if (i % 2 !== 0) {
               this.message += matches[i].toLowerCase() + ',' + '\n'
             }
           }
         }
-      } catch (error) {
-        console.log(error)
-      }
     },
     async register() {
       if (this.type === 'user') {
