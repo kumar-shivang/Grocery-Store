@@ -57,7 +57,6 @@ export const useUserStore = defineStore('user', {
           this.products.push(product)
         })
       } else {
-        console.log(data)
         this.products = []
       }
     },
@@ -73,7 +72,6 @@ export const useUserStore = defineStore('user', {
           this.categories.push(category)
         })
       } else {
-        console.log(data)
         this.categories = []
       }
     },
@@ -86,14 +84,12 @@ export const useUserStore = defineStore('user', {
         mode: 'cors'
       })
       const data = await response.json()
-      console.log(data)
       if (response.ok) {
         this.unconfirmed = []
         data.orders.forEach((order) => {
           this.unconfirmed.push(order)
         })
       } else {
-        console.log(data)
         this.unconfirmed = []
       }
     },
@@ -112,7 +108,6 @@ export const useUserStore = defineStore('user', {
           this.confirmed.push(order)
         })
       } else {
-        console.log(data)
         this.confirmed = []
       }
     }
