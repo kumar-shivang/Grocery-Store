@@ -5,7 +5,6 @@ export default {
   name: 'LoginForm',
   setup() {
     const store = useBaseStore()
-    console.log('Setting up store in login form component')
     return { store }
   },
   components: {
@@ -38,7 +37,6 @@ export default {
         this.type
       )
       if (success) {
-        console.log('Login successful')
         if (this.type === 'admin') {
           this.$router.push('/admin')
         } else if (this.type === 'manager') {
