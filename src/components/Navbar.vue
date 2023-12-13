@@ -4,7 +4,6 @@ export default {
   name: 'Navbar',
   setup() {
     const store = useBaseStore()
-    console.log('Setting up store in navbar component')
     return { store }
   },
   methods: {
