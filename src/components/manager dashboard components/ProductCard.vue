@@ -31,7 +31,6 @@ export default {
       type: Object,
       required: true,
       validator(product) {
-        console.log(product)
         let id = product.id
         let name = product.name
         let description = product.description
@@ -210,7 +209,6 @@ export default {
         setTimeout(() => {
           let interval = setInterval(async () => {
             let status = await this.getTaskStatus(taskID)
-            console.log(status)
             if (status === 'SUCCESS') {
               this.store.showNotification('Downloaded CSV', 'success')
               let a = document.createElement('a')
@@ -223,7 +221,6 @@ export default {
             }
           }, 1000)
         }, 5000)
-        console.log(taskID)
       }
     }
   }
