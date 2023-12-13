@@ -86,10 +86,8 @@ export default {
       })
       let data = await response.json()
       if (response.ok) {
-        console.log('ok')
         this.baseStore.showNotification(data.message, 'success')
       } else {
-        console.log('not ok')
         this.baseStore.showNotification(data.message, 'danger')
       }
       this.creationRequest.category_name = ''
