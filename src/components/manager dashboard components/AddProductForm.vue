@@ -92,11 +92,8 @@ export default {
       }
     },
     handleFileChange(e) {
-      console.log('Handling file change')
       this.imageUpload.fileToUpload = e.target.files[0]
       if (this.imageUpload.fileToUpload.size <= 2097152) {
-        console.log('Image size is less than 2MB')
-        console.log(this.imageUpload.fileToUpload.size / 1048576 + 'MB')
         const reader = new FileReader()
         reader.onload = (e) => {
           this.imageUpload.previewImage = e.target.result
@@ -119,7 +116,6 @@ export default {
         body: formData
       })
       let data = await response.json()
-      console.log(data)
       if (response.ok) {
         this.imageUpload.done = true
         this.imageUpload.previewImage = null
