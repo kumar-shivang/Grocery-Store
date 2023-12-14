@@ -81,9 +81,6 @@ export default {
     },
     loggedIn() {
       return this.baseStore.getIsLogged
-    },
-    type() {
-      return this.baseStore.getType
     }
   },
   methods: {
@@ -107,12 +104,12 @@ export default {
   },
   beforeMount() {
     if (this.loggedIn) {
-      if (this.type === 'user') {
+      if (this.baseStore.$state.type === 'user') {
         this.userStore.fetchProducts()
         this.userStore.fetchCategories()
-      } else if (this.type === 'manager') {
+      } else if (this.baseStore.$state.type === 'manager') {
         this.$router.push('/manager')
-      } else if (this.type === 'admin') {
+      } else if (this.baseStore.$state.type === 'admin') {
         this.$router.push('/admin')
       }
     } else {
