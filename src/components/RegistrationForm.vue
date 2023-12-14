@@ -67,59 +67,59 @@ export default {
       }
     },
     async userRegistration() {
-        const response = await fetch('http://127.0.0.1:5000/api/user/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Access-Control-Allow-Origin': '*',
-            cors: 'no-cors'
-          },
-          body: JSON.stringify({
-            username: this.form.username,
-            password: this.form.password,
-            email: this.form.email
-          })
+      const response = await fetch('http://127.0.0.1:5000/api/user/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Access-Control-Allow-Origin': '*',
+          cors: 'no-cors'
+        },
+        body: JSON.stringify({
+          username: this.form.username,
+          password: this.form.password,
+          email: this.form.email
         })
-        this.got_response = true
-        this.success = response.ok
-        if (this.success) {
-          this.message = 'User created successfully'
-        } else {
-          let data = await response.json()
-          let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
-          for (let i = 0; i < matches.length; i++) {
-            if (i % 2 !== 0) {
-              this.message += matches[i].toLowerCase() + ','
-            }
+      })
+      this.got_response = true
+      this.success = response.ok
+      if (this.success) {
+        this.message = 'User created successfully'
+      } else {
+        let data = await response.json()
+        let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
+        for (let i = 0; i < matches.length; i++) {
+          if (i % 2 !== 0) {
+            this.message += matches[i].toLowerCase() + ','
           }
         }
+      }
     },
     async managerRegistration() {
-        const response = await fetch('http://127.0.0.1:5000/api/manager/create_manager_request', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-          },
-          body: JSON.stringify({
-            username: this.form.username,
-            password: this.form.password,
-            email: this.form.email
-          })
+      const response = await fetch('http://127.0.0.1:5000/api/manager/create_manager_request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify({
+          username: this.form.username,
+          password: this.form.password,
+          email: this.form.email
         })
-        this.got_response = true
-        this.success = response.ok
-        if (this.success) {
-          this.message = 'Manager request created successfully, please wait for admin approval'
-        } else {
-          let data = await response.json()
-          data = data.message
-          let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
-          for (let i = 0; i < matches.length; i++) {
-            if (i % 2 !== 0) {
-              this.message += matches[i].toLowerCase() + ',' + '\n'
-            }
+      })
+      this.got_response = true
+      this.success = response.ok
+      if (this.success) {
+        this.message = 'Manager request created successfully, please wait for admin approval'
+      } else {
+        let data = await response.json()
+        data = data.message
+        let matches = data.match(/['"](.*?)['"]/g).map((str) => str.slice(1, -1))
+        for (let i = 0; i < matches.length; i++) {
+          if (i % 2 !== 0) {
+            this.message += matches[i].toLowerCase() + ',' + '\n'
           }
         }
+      }
     },
     async register() {
       if (this.type === 'user') {
@@ -127,9 +127,6 @@ export default {
       } else if (this.type === 'manager') {
         await this.managerRegistration()
       }
-      setTimeout(() => {
-        this.$router.push('/')
-      }, 5000)
     }
   },
   emits: ['login-clicked']
