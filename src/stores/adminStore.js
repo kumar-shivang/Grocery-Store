@@ -26,6 +26,9 @@ export const useAdminStore = defineStore({
     },
     getCategoryRequests() {
       return this.categoryRequests
+    },
+    getManagerRequests() {
+      return this.managerRequests
     }
   },
   actions: {
@@ -44,9 +47,12 @@ export const useAdminStore = defineStore({
           method: 'GET',
           mode: 'cors'
         })
+        let data = await response.json()
         if (response.ok) {
-          const data = await response.json()
-          this.managerRequests = data.manager_requests // manager_requests is a list of objects
+          this.managerRequests = []
+          data.manager_requests.forEach((managerRequest) => {
+            this.managerRequests.push(managerRequest)
+          })
         } else if (response.status === 404) {
           this.noManagerRequests = true
         }
@@ -61,8 +67,8 @@ export const useAdminStore = defineStore({
           method: 'GET',
           mode: 'cors'
         })
+        let data = await response.json()
         if (response.ok) {
-          const data = await response.json()
           this.categoryRequests = []
           data.category_requests.forEach((categoryRequest) => {
             this.categoryRequests.push(categoryRequest)
