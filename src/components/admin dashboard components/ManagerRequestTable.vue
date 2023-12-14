@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     managerRequests() {
-      return this.adminStore.managerRequests
+      return this.adminStore.getManagerRequests
     }
   }
 }
