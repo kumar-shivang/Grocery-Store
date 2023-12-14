@@ -1,5 +1,5 @@
 <script>
-import LoginForm from '@/components/user components/LoginForm.vue'
+import LoginForm from '@/components/LoginForm.vue'
 import AdminDashboard from '@/components/admin dashboard components/AdminDashboard.vue'
 import { useBaseStore } from '@/stores/baseStore'
 import { useAdminStore } from '@/stores/adminStore'

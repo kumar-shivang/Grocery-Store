@@ -1,7 +1,7 @@
 <script>
 import { useBaseStore } from '@/stores/baseStore'
 import { useManagerStore } from '@/stores/managerStore'
-import LoginForm from '@/components/user components/LoginForm.vue'
+import LoginForm from '@/components/LoginForm.vue'
 import RegistrationForm from '@/components/RegistrationForm.vue'
 import managerDashboard from '@/components/manager dashboard components/ManagerDashboard.vue'
 export default {
